@@ -49,11 +49,12 @@ public class login extends javax.swing.JFrame {
         SignUpButton = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         Password = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
         confirmPassword = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         LoginButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -125,9 +126,6 @@ public class login extends javax.swing.JFrame {
         getContentPane().add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(-470, 680, -1, 300));
         getContentPane().add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, -1, -1));
 
-        jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Taiga/semicircle.png"))); // NOI18N
-        getContentPane().add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, -10, 290, 300));
-
         jLabel15.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
         jLabel15.setText("Kata Sandi");
         getContentPane().add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 260, -1, -1));
@@ -153,6 +151,12 @@ public class login extends javax.swing.JFrame {
             }
         });
         getContentPane().add(confirmPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 330, 200, -1));
+
+        jLabel17.setIcon(new javax.swing.ImageIcon("C:\\Users\\mansy\\OneDrive\\Documents\\NetBeansProjects\\TaigaV002\\headsignup.png")); // NOI18N
+        getContentPane().add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 100, -1, -1));
+
+        jLabel2.setIcon(new javax.swing.ImageIcon("C:\\Users\\mansy\\OneDrive\\Documents\\NetBeansProjects\\TaigaV002\\semicircle.png")); // NOI18N
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, -140, 290, 450));
 
         LoginButton.setBackground(new java.awt.Color(255, 153, 102));
         LoginButton.setForeground(new java.awt.Color(255, 255, 255));
@@ -298,11 +302,12 @@ public class login extends javax.swing.JFrame {
     private javax.swing.JTextField confirmPassword;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
