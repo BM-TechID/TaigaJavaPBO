@@ -4,7 +4,7 @@
  */
 package Main;
 
-import Main.Dashboard;
+import Taiga.Dashboard;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.Connection;
