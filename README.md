@@ -1,6 +1,7 @@
 # TaigaJavaPBO
 
-![TaigaJavaPBO](https://raw.githubusercontent.com/BM-TechID/TaigaJavaPBO/main/Screenshot%202023-06-13%20221231.png)
+![TaigaJavaPBO](https://i.ibb.co/QXPh3rS/Screenshot-2023-06-26-151457.png)
+
 
 ## Deskripsi
 
