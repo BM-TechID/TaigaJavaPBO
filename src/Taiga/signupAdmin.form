@@ -224,21 +224,16 @@
     <Component class="javax.swing.JLabel" name="jLabel5">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="2" name="C:\Users\mansy\OneDrive\Documents\NetBeansProjects\TaigaV002\signup.png"/>
+          <Image iconType="3" name="/Image/Header-signup.png"/>
         </Property>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="460" y="190" width="440" height="360"/>
+          <AbsoluteConstraints x="350" y="70" width="530" height="460"/>
         </Constraint>
       </Constraints>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
-      <Properties>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="2" name="C:\Users\mansy\OneDrive\Documents\NetBeansProjects\TaigaV002\semicircle.png"/>
-        </Property>
-      </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
           <AbsoluteConstraints x="460" y="-150" width="680" height="560"/>

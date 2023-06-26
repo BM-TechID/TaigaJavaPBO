@@ -71,7 +71,6 @@ public class signinAdmin extends javax.swing.JFrame {
         btnMasuk = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -165,11 +164,8 @@ public class signinAdmin extends javax.swing.JFrame {
         });
         getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 500, -1, -1));
 
-        jLabel17.setIcon(new javax.swing.ImageIcon("C:\\Users\\mansy\\OneDrive\\Documents\\NetBeansProjects\\TaigaV002\\headsignup.png")); // NOI18N
-        getContentPane().add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 230, -1, -1));
-
-        jLabel2.setIcon(new javax.swing.ImageIcon("C:\\Users\\mansy\\OneDrive\\Documents\\NetBeansProjects\\TaigaV002\\semicircle.png")); // NOI18N
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, -240, 590, 770));
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/Header-sign.png"))); // NOI18N
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 90, 450, 490));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -307,7 +303,6 @@ public class signinAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

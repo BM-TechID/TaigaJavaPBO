@@ -68,13 +68,13 @@ public class Main extends javax.swing.JFrame {
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 40));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\mansy\\OneDrive\\Documents\\NetBeansProjects\\TaigaJavaPBO-4.0\\src\\Image\\taiga.png")); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/Background.png"))); // NOI18N
         jLabel1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 jLabel1MouseMoved(evt);
             }
         });
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-20, 10, -1, -1));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-50, 0, 900, 570));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
