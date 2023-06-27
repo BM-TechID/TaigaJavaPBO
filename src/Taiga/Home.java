@@ -96,7 +96,7 @@ public class Home extends javax.swing.JFrame {
         jLabel6.setText("Yuk kita Upgrade!");
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 160, -1, -1));
 
-        jButton4.setBackground(new java.awt.Color(255, 153, 102));
+        jButton4.setBackground(new java.awt.Color(255, 153, 0));
         jButton4.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
         jButton4.setForeground(new java.awt.Color(255, 255, 255));
         jButton4.setText("Yuk Mulai!");
@@ -121,12 +121,12 @@ public class Home extends javax.swing.JFrame {
 
         Dashboard2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/dashboard.png"))); // NOI18N
         Dashboard2.addAncestorListener(new javax.swing.event.AncestorListener() {
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
-            }
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
                 Dashboard2AncestorAdded(evt);
             }
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
             }
         });
         jPanel1.add(Dashboard2);
@@ -168,7 +168,7 @@ public class Home extends javax.swing.JFrame {
         });
         getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 490, -1, -1));
 
-        Logout.setBackground(new java.awt.Color(255, 153, 102));
+        Logout.setBackground(new java.awt.Color(255, 153, 0));
         Logout.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         Logout.setText("Keluar");
         Logout.addActionListener(new java.awt.event.ActionListener() {
