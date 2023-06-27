@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 26, 2023 at 10:19 AM
+-- Generation Time: Jun 27, 2023 at 07:54 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `db_crud`
 --
-CREATE DATABASE IF NOT EXISTS `db_crud` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `db_crud`;
 
 -- --------------------------------------------------------
 
@@ -63,7 +61,9 @@ CREATE TABLE `data_warga` (
 --
 
 INSERT INTO `data_warga` (`id_warga`, `nama`, `jalan`, `no_rumah`, `rt`, `no_hp`) VALUES
-(1, 'Yoko', 'Kenangan No 7', '111', '2', '081212341234');
+(1, 'Yoko', 'Kenangan No 7', '111', '2', '081212341234'),
+(2, 'Dimas', 'Mawar', '123', '1', '0823232123'),
+(3, 'Ammar', 'Jambu', '34', '3', '0823223424');
 
 -- --------------------------------------------------------
 
@@ -104,6 +104,37 @@ INSERT INTO `signup` (`email`, `username`, `password`) VALUES
 ('asu@mail.com', 'asu', 'asu'),
 ('awetawe', 'aerawer', 'aerawer'),
 ('a', 'a', 'a');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tagihan`
+--
+
+CREATE TABLE `tagihan` (
+  `bulan` varchar(50) NOT NULL,
+  `nominal` int(50) NOT NULL,
+  `untuk` varchar(50) NOT NULL,
+  `keterangan` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tagihan`
+--
+
+INSERT INTO `tagihan` (`bulan`, `nominal`, `untuk`, `keterangan`) VALUES
+('April', 1000, 'Semua Warga', 'test'),
+('April', 1000, 'Yoko', 'sad'),
+('Januari', 45645, 'Ammar', '45645'),
+('Januari', 567567, 'Yoko', '567567'),
+('Mei', 23424, 'Dimas', '23424'),
+('Januari', 23131, 'Ammar', '23131'),
+('Januari', 34343, 'Yoko', '34343'),
+('Januari', 23424, 'Pilih', '23424'),
+('Januari', 345345, 'Yoko', '345345'),
+('Januari', 45645, 'Ammar', '45645'),
+('Januari', 345345, 'Semua Warga', '345345'),
+('Januari', 456546, 'Dimas', '456546');
 
 --
 -- Indexes for dumped tables
