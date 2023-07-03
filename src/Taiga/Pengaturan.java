@@ -157,7 +157,7 @@ public class Pengaturan extends javax.swing.JFrame {
         });
 
         btnPemasukan.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
-        btnPemasukan.setText("Pemasukan");
+        btnPemasukan.setText("Tagihan");
         btnPemasukan.setMaximumSize(new java.awt.Dimension(90, 35));
         btnPemasukan.setMinimumSize(new java.awt.Dimension(90, 30));
         btnPemasukan.setPreferredSize(new java.awt.Dimension(90, 30));
@@ -262,8 +262,7 @@ public class Pengaturan extends javax.swing.JFrame {
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(21, 21, 21)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(108, 108, 108)

@@ -38,6 +38,7 @@ public class DashboardMain extends javax.swing.JFrame {
         pack(); // Atur ukuran frame secara otomatis
         setVisible(true);
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -59,9 +60,10 @@ public class DashboardMain extends javax.swing.JFrame {
         btnPengeluaran = new javax.swing.JButton();
         btnPengaturan = new javax.swing.JButton();
         btnPemasukan = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -142,7 +144,7 @@ public class DashboardMain extends javax.swing.JFrame {
         });
 
         btnPemasukan.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
-        btnPemasukan.setText("Pemasukan");
+        btnPemasukan.setText("Tagihan");
         btnPemasukan.setMaximumSize(new java.awt.Dimension(90, 35));
         btnPemasukan.setMinimumSize(new java.awt.Dimension(90, 30));
         btnPemasukan.setPreferredSize(new java.awt.Dimension(90, 30));
@@ -191,22 +193,6 @@ public class DashboardMain extends javax.swing.JFrame {
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 180, 670));
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 754, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 614, Short.MAX_VALUE)
-        );
-
-        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 50, 760, 620));
-
         jPanel4.setBackground(new java.awt.Color(255, 153, 0));
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 5));
 
@@ -231,6 +217,15 @@ public class DashboardMain extends javax.swing.JFrame {
         );
 
         getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 760, 50));
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/free-vector-infographic-elements.jpg"))); // NOI18N
+        jPanel3.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, 770, 550));
+
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 50, 760, 620));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -326,6 +321,7 @@ public class DashboardMain extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

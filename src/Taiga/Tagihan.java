@@ -9,19 +9,43 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
+import java.io.FileOutputStream;
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+
+import javax.swing.JOptionPane;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -100,6 +124,7 @@ private DefaultTableModel model;
         setVisible(true);
 
 
+        
 
 
 
@@ -356,6 +381,11 @@ private DefaultTableModel model;
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable2MouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(jTable2);
 
         jPanel3.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 280, 720, 320));
@@ -501,56 +531,65 @@ private DefaultTableModel model;
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        
-        // refresh
-        refreshTableData();
-        
-        // Mengambil data yang dipilih dari komponen GUI
-        String selectedOption = jComboBox2.getSelectedItem().toString();
+        // Mengambil baris yang dipilih dari JTable
+        int selectedRow = jTable2.getSelectedRow();
 
-        // Memanggil kelas Koneksi untuk melakukan koneksi ke database
-        Connection conn = null;
-        try {
-            conn = Koneksi.getConnection();
-        } catch (SQLException ex) {
-            Logger.getLogger(Tagihan.class.getName()).log(Level.SEVERE, null, ex);
-        }
+// Memastikan baris terpilih
+        if (selectedRow != -1) {
+            // Mendapatkan data dari baris terpilih
+            DefaultTableModel tableModel = (DefaultTableModel) jTable2.getModel();
+            String selectedOption = tableModel.getValueAt(selectedRow, 0).toString();
 
-        if (conn != null) {
+            // Memanggil kelas Koneksi untuk melakukan koneksi ke database
+            Connection conn = null;
             try {
-                // Query untuk menghapus data dari tabel tagihan berdasarkan nama
-                String query = "DELETE FROM tagihan WHERE nama = ?";
-                PreparedStatement statement = conn.prepareStatement(query);
-                statement.setString(1, selectedOption);
-
-                // Melakukan eksekusi statement untuk menghapus data
-                int rowsAffected = statement.executeUpdate();
-
-                if (rowsAffected > 0) {
-                    // Menampilkan pesan berhasil
-                    JOptionPane.showMessageDialog(null, "Data berhasil dihapus.");
-
-                    // Refresh combo box setelah data dihapus
-                    refreshComboBox();
-                } else {
-                    // Menampilkan pesan jika data tidak ditemukan
-                    JOptionPane.showMessageDialog(null, "Data tidak ditemukan.");
-                }
-
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+                conn = Koneksi.getConnection();
+            } catch (SQLException ex) {
+                Logger.getLogger(Tagihan.class.getName()).log(Level.SEVERE, null, ex);
             }
+
+            if (conn != null) {
+                try {
+                    // Query untuk menghapus data dari tabel tagihan berdasarkan nama
+                    String query = "DELETE FROM tagihan WHERE nama = ?";
+                    PreparedStatement statement = conn.prepareStatement(query);
+                    statement.setString(1, selectedOption);
+
+                    // Melakukan eksekusi statement untuk menghapus data
+                    int rowsAffected = statement.executeUpdate();
+
+                    if (rowsAffected > 0) {
+                        // Menampilkan pesan berhasil
+                        JOptionPane.showMessageDialog(null, "Data berhasil dihapus.");
+
+                        // Menghapus baris terpilih dari model tabel
+                        tableModel.removeRow(selectedRow);
+                    } else {
+                        // Menampilkan pesan jika data tidak ditemukan
+                        JOptionPane.showMessageDialog(null, "Data tidak ditemukan.");
+                    }
+
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            // Menampilkan pesan jika tidak ada baris terpilih
+            JOptionPane.showMessageDialog(null, "Pilih baris yang akan dihapus.");
         }
+
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButtonSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSimpanActionPerformed
         // TODO add your handling code here:
+        
           // Mengambil data dari komponen GUI
             String bulan = jComboBoxBulan.getSelectedItem().toString();
             String nominal = txtNominal.getText();
             String untuk = jComboBoxUntuk.getSelectedItem().toString();
-            String keterangan = txtNominal.getText();
+            String keterangan = txtKeterangan.getText();
         //refresh
         refreshTableData();
 
@@ -595,6 +634,7 @@ private DefaultTableModel model;
             } catch (SQLException e) {
             }
         }
+            refreshTableData();
 
     }//GEN-LAST:event_jButtonSimpanActionPerformed
 
@@ -612,42 +652,37 @@ private DefaultTableModel model;
 
     private void btnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariActionPerformed
             // Get the search criteria from the input field
-        String searchCriteria = txtCari.getText();
+                // Ambil kriteria pencarian dari input field
+                String searchCriteria = txtCari.getText();
 
-        try {
-            // Check if the data is found in the tagihan table
-            boolean dataFound = checkDataExistsInTagihan(searchCriteria);
-
-            if (dataFound) {
-                JOptionPane.showMessageDialog(null, "Data ditemukan.");
-
-                // Retrieve the phone number from the data_warga table
-                String phoneNumber = retrievePhoneNumberFromDataWarga(searchCriteria);
-
-                // Generate the invoice details from the tagihan table
-                String invoiceDetails = generateInvoiceDetailsFromTagihan(searchCriteria);
-
-                // Prompt the user to enter the WhatsApp message content
-                String message = "Rincian Tagihan:\n" + invoiceDetails + "\n\nMasukkan pesan WhatsApp:";
-                String userMessage = JOptionPane.showInputDialog(null, message);
-
-                // Replace "08" with "62" in the phone number if present
-                phoneNumber = phoneNumber.replaceFirst("^08", "62");
-
-                // Open the default web browser with the WhatsApp Web URL
-                String whatsappURL = "https://web.whatsapp.com/send?phone=" + phoneNumber + "&text=" + userMessage;
-                java.awt.Desktop.getDesktop().browse(java.net.URI.create(whatsappURL));
-            } else {
-                JOptionPane.showMessageDialog(null, "Data tidak ditemukan.");
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } catch (IOException ex) {
-        Logger.getLogger(Tagihan.class.getName()).log(Level.SEVERE, null, ex);
-    }
+                // Panggil metode untuk melakukan pencarian
+                performSearch(searchCriteria);
+    
     
 
     }//GEN-LAST:event_btnCariActionPerformed
+
+    private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
+        // TODO add your handling code here:
+        // Menambahkan event listener untuk mouse click pada JTable
+        jTable2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Mendapatkan baris yang dipilih
+                int selectedRow = jTable2.getSelectedRow();
+
+                // Memastikan baris terpilih
+                if (selectedRow != -1) {
+                    // Mendapatkan data dari baris terpilih
+                    DefaultTableModel tableModel = (DefaultTableModel) jTable2.getModel();
+                    String selectedOption = tableModel.getValueAt(selectedRow, 0).toString();
+
+                    // Lanjutkan dengan kode penghapusan data
+                    // ...
+                }
+            }
+        });
+    }//GEN-LAST:event_jTable2MouseClicked
 
     /**
      * @param args the command line arguments
@@ -874,6 +909,190 @@ private boolean checkDataExistsInTagihan(String searchCriteria) throws SQLExcept
 
             return invoiceDetails;
         }
+        
+        // kelas Untuk button cari
+        private void performSearch(String searchCriteria) {
+        // Menghubungkan ke database
+        Connection conn = null;
+        try {
+            conn = Koneksi.getConnection();
+        } catch (SQLException ex) {
+            Logger.getLogger(Tagihan.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (conn != null) {
+            try {
+                // Query untuk mencari data berdasarkan kriteria pencarian
+                String query = "SELECT * FROM tagihan WHERE bulan LIKE ? OR nominal LIKE ? OR untuk LIKE ? OR keterangan LIKE ?";
+                PreparedStatement statement = conn.prepareStatement(query);
+                String likeCriteria = "%" + searchCriteria + "%";
+                statement.setString(1, likeCriteria);
+                statement.setString(2, likeCriteria);
+                statement.setString(3, likeCriteria);
+                statement.setString(4, likeCriteria);
+
+                // Eksekusi query
+                ResultSet result = statement.executeQuery();
+
+                // Membuat model tabel
+                DefaultTableModel tableModel = new DefaultTableModel();
+                tableModel.addColumn("Bulan");
+                tableModel.addColumn("Nominal");
+                tableModel.addColumn("Untuk");
+                tableModel.addColumn("Keterangan");
+
+                // Menyimpan data hasil pencarian dalam list
+                List<String[]> rows = new ArrayList<>();
+
+                // Tambahkan baris data hasil pencarian ke model tabel dan list
+                double totalTagihan = 0.0;
+                while (result.next()) {
+                    String bulan = result.getString("bulan");
+                    String nominal = result.getString("nominal");
+                    String untuk = result.getString("untuk");
+                    String keterangan = result.getString("keterangan");
+
+                    tableModel.addRow(new Object[]{bulan, nominal, untuk, keterangan});
+                    rows.add(new String[]{bulan, nominal, untuk, keterangan});
+
+                    // Menghitung total tagihan
+                    double tagihan = Double.parseDouble(nominal);
+                    totalTagihan += tagihan;
+                }
+
+                // Buat JTable dengan menggunakan model tabel
+                JTable table = new JTable(tableModel);
+
+                // Tampilkan tabel dalam JScrollPane
+                JScrollPane scrollPane = new JScrollPane(table);
+
+                // Tampilkan dialog prompt dengan hasil pencarian
+                Object[] options = {"Cetak"};
+                int option = JOptionPane.showOptionDialog(null, scrollPane, "Hasil Pencarian", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+
+                // Jika pengguna memilih tombol "Cetak", cetak hasil pencarian
+                if (option == 0) {
+                    printTable(rows, totalTagihan);
+                }
+
+                // Tutup koneksi database
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void printTable(List<String[]> rows, double totalTagihan) {
+    // Format jumlah total menjadi format rupiah (Rp)
+    NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
+
+    // Menampilkan hasil pencarian dan rincian nama
+    StringBuilder messageBuilder = new StringBuilder();
+    messageBuilder.append("Rincian Nama:\n");
+
+    for (String[] row : rows) {
+        String bulan = row[0];
+        String nominal = row[1];
+        String untuk = row[2];
+        String keterangan = row[3];
+
+        // Tambahkan rincian nama (menggunakan salah satu nama dari string 'untuk')
+        String[] namaArray = untuk.split(",");
+        Random random = new Random();
+        String nama = namaArray[random.nextInt(namaArray.length)];
+        messageBuilder.append(nama).append("\n");
+
+        messageBuilder.append("\nBulan: ").append(bulan);
+        messageBuilder.append("\nNominal: ").append(nominal);
+        messageBuilder.append("\nUntuk: ").append(untuk);
+        messageBuilder.append("\nKeterangan: ").append(keterangan);
+        messageBuilder.append("\n-------------------\n");
+    }
+
+    // Tambahkan total tagihan ke pesan
+    messageBuilder.append("Total Tagihan: ").append(formatRupiah.format(totalTagihan));
+
+    // Tampilkan pesan hasil pencarian dengan rincian nama dan total tagihan
+    JOptionPane.showMessageDialog(null, messageBuilder.toString());
+
+    // Cetak tabel menjadi file PDF
+    Document document = new Document(PageSize.A4);
+
+    try {
+        PdfWriter.getInstance(document, new FileOutputStream("output.pdf"));
+        document.open();
+        
+        
+        
+        // Mengambil data dari kolom "untuk" sebagai nama
+        String nama = rows.get(0)[2];
+
+        // Tambahkan paragraf "Nama" ke dokumen PDF
+        Paragraph paragrafNama = new Paragraph("           Nama: " + nama);
+        document.add(paragrafNama);
+
+        // Tambahkan total tagihan ke PDF
+        document.add(new Paragraph("           Total Tagihan: " + formatRupiah.format(totalTagihan) + "\n\n"));
+        
+        document.add(new Paragraph("           Rincian Tagihan: \n\n"));
+
+        PdfPTable table = new PdfPTable(4);
+
+        PdfPCell cell = new PdfPCell();
+        cell.setColspan(4);
+        table.addCell(cell);
+
+        table.addCell("Bulan");
+        table.addCell("Nominal");
+        table.addCell("Untuk");
+        table.addCell("Keterangan");
+
+        for (String[] row : rows) {
+            String bulan = row[0];
+            String nominal = row[1];
+            String untuk = row[2];
+            String keterangan = row[3];
+
+            table.addCell(bulan);
+            table.addCell(nominal);
+            table.addCell(untuk);
+            table.addCell(keterangan);
+        }
+
+        document.add(table);
+
+
+        document.close();
+
+        JOptionPane.showMessageDialog(null, "Tabel telah dicetak ke file PDF.");
+        
+        // Nama file PDF yang akan dibuka
+        String fileName = "output.pdf";
+
+        // Mendapatkan direktori kerja saat ini
+        String workingDirectory = System.getProperty("user.dir");
+
+        // Path lengkap ke file PDF
+        String filePath = workingDirectory + File.separator + fileName;
+
+        // Membuka file PDF di browser default
+        try {
+            File file = new File(filePath);
+            Desktop.getDesktop().open(file);
+        } catch (IOException e) {
+            // Tangani jika terjadi kesalahan saat membuka file
+            e.printStackTrace();
+        }
+
+    } catch (DocumentException e) {
+        e.printStackTrace();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+        
+        
 
 }
 
