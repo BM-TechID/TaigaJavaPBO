@@ -176,7 +176,7 @@ public class DataWarga extends javax.swing.JFrame {
         });
 
         btnPemasukan.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
-        btnPemasukan.setText("Pemasukan");
+        btnPemasukan.setText("Tagihan");
         btnPemasukan.setMaximumSize(new java.awt.Dimension(90, 35));
         btnPemasukan.setMinimumSize(new java.awt.Dimension(90, 30));
         btnPemasukan.setPreferredSize(new java.awt.Dimension(90, 30));
@@ -297,6 +297,7 @@ public class DataWarga extends javax.swing.JFrame {
         });
         jPanel3.add(BtnReset, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 210, -1, -1));
 
+        TxtNoHP.setText("62");
         TxtNoHP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 TxtNoHPActionPerformed(evt);

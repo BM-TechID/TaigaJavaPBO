@@ -142,7 +142,7 @@ public class DataBayar extends javax.swing.JFrame {
         });
 
         btnPemasukan.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
-        btnPemasukan.setText("Pemasukan");
+        btnPemasukan.setText("Tagihan");
         btnPemasukan.setMaximumSize(new java.awt.Dimension(90, 35));
         btnPemasukan.setMinimumSize(new java.awt.Dimension(90, 30));
         btnPemasukan.setPreferredSize(new java.awt.Dimension(90, 30));
