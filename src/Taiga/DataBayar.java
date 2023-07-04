@@ -4,9 +4,27 @@
  */
 package Taiga;
 
+import static Taiga.Koneksi.getConnection;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -17,9 +35,51 @@ public class DataBayar extends javax.swing.JFrame {
     /**
      * Creates new form DashboardMain
      */
+private DefaultTableModel model;
     public DataBayar() {
         initComponents();
+        // Initialize the model for jTable2
+        model = new DefaultTableModel(
+                new Object[][] {
+                    {null, null, null, null},
+                    {null, null, null, null},
+                    {null, null, null, null},
+                    {null, null, null, null}
+                },
+                new String[] {
+                    "Bulan", "Nominal", "Untuk", "Keterangan"
+                }
+        );
+
+    // Set the model for jTable2
+    jTable2.setModel(model);
+    
+        // Add a MouseListener to jTable2
+    jTable2.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            int selectedRow = jTable2.getSelectedRow();
+            if (selectedRow != -1) {
+                // Perform an action with the selected row data
+                String bulan = model.getValueAt(selectedRow, 0).toString();
+                int nominal = Integer.parseInt(model.getValueAt(selectedRow, 1).toString());
+                String untuk = model.getValueAt(selectedRow, 2).toString();
+                String keterangan = model.getValueAt(selectedRow, 3).toString();
+
+                // Example action: display the selected row data in a dialog box
+                String message = "Bulan: " + bulan + "\n"
+                        + "Nominal: " + nominal + "\n"
+                        + "Untuk: " + untuk + "\n"
+                        + "Keterangan: " + keterangan;
+                JOptionPane.showMessageDialog(null, message);
+            }
+        }
+    });
+
+    // Refresh the table data
+    refreshTableData();
         
+        JTable jTable2 = new javax.swing.JTable();
         // Mengatur ukuran default untuk tablet
         int tabletWidth = 800;
         int tabletHeight = 600;
@@ -60,6 +120,10 @@ public class DataBayar extends javax.swing.JFrame {
         btnPengaturan = new javax.swing.JButton();
         btnPemasukan = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
+        txtCari = new javax.swing.JTextField();
+        btnCari = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
 
@@ -194,18 +258,54 @@ public class DataBayar extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
 
+        btnCari.setText("Cari");
+        btnCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCariActionPerformed(evt);
+            }
+        });
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable2);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 754, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(50, 50, 50)
+                        .addComponent(btnCari, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 254, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 614, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCari))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(135, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 50, 760, 620));
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 60, 760, 620));
 
         jPanel4.setBackground(new java.awt.Color(255, 153, 0));
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 5));
@@ -277,6 +377,16 @@ public class DataBayar extends javax.swing.JFrame {
         pemasukan.setVisible(true);
     }//GEN-LAST:event_btnPemasukanActionPerformed
 
+    private void btnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariActionPerformed
+        // Get the search criteria from the input field
+        // Ambil kriteria pencarian dari input field
+        String searchCriteria = txtCari.getText();
+
+        // Panggil metode untuk melakukan pencarian
+        performSearch(searchCriteria);
+
+    }//GEN-LAST:event_btnCariActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -304,6 +414,8 @@ public class DataBayar extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -314,6 +426,7 @@ public class DataBayar extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCari;
     private javax.swing.JButton btnDashboard;
     private javax.swing.JButton btnDataBayar;
     private javax.swing.JButton btnDataWarga;
@@ -328,5 +441,265 @@ public class DataBayar extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable2;
+    private javax.swing.JTextField txtCari;
     // End of variables declaration//GEN-END:variables
+    
+    // Fungsi untuk mengambil ulang data nama dari tabel data_warga
+    private void refreshComboBox() {
+        // Memanggil kelas Koneksi untuk melakukan koneksi ke database
+        Connection conn = null;
+        try {
+            conn = Koneksi.getConnection();
+        } catch (SQLException ex) {
+            Logger.getLogger(Tagihan.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (conn != null) {
+            try {
+                // Query untuk mengambil data nama dari tabel data_warga
+                String query = "SELECT nama FROM data_warga";
+                Statement statement = conn.createStatement();
+                ResultSet resultSet = statement.executeQuery(query);
+
+                // Mengosongkan combo box sebelum menambahkan data baru
+                jComboBox2.removeAllItems();
+
+                // Menambahkan nama-nama dari tabel data_warga ke combo box
+                while (resultSet.next()) {
+                    String nama = resultSet.getString("nama");
+                    jComboBox2.addItem(nama);
+                }
+
+                conn.close();
+            } catch (SQLException e) {
+            }
+        }
+    }
+
+        private void refreshTableData() {
+            try {
+                // Clear the existing rows in the model
+                model.setRowCount(0);
+
+                // Connect to the database
+                Connection conn = getConnection();
+
+                // Query to retrieve data from the tagihan table
+                String query = "SELECT * FROM tagihan";
+
+                // Create a statement
+                Statement stmt = conn.createStatement();
+
+                // Execute the query and get the result set
+                ResultSet rs = stmt.executeQuery(query);
+
+                // Iterate through the result set and add rows to the model
+                while (rs.next()) {
+                    String bulan = rs.getString("bulan");
+                    int nominal = rs.getInt("nominal");
+                    String untuk = rs.getString("untuk");
+                    String keterangan = rs.getString("keterangan");
+
+                    model.addRow(new Object[]{bulan, nominal, untuk, keterangan});
+                }
+
+                // Close the result set, statement, and connection
+                rs.close();
+                stmt.close();
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Tagihan.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    private void performSearch(String searchCriteria) {
+        // Menghubungkan ke database
+        Connection conn = null;
+        try {
+            conn = Koneksi.getConnection();
+        } catch (SQLException ex) {
+            Logger.getLogger(Tagihan.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (conn != null) {
+            try {
+                // Query untuk mencari data berdasarkan kriteria pencarian
+                String query = "SELECT * FROM tagihan WHERE bulan LIKE ? OR nominal LIKE ? OR untuk LIKE ? OR keterangan LIKE ?";
+                PreparedStatement statement = conn.prepareStatement(query);
+                String likeCriteria = "%" + searchCriteria + "%";
+                statement.setString(1, likeCriteria);
+                statement.setString(2, likeCriteria);
+                statement.setString(3, likeCriteria);
+                statement.setString(4, likeCriteria);
+
+                // Eksekusi query
+                ResultSet result = statement.executeQuery();
+
+                
+                // Membuat model tabel
+                DefaultTableModel tableModel = new DefaultTableModel();
+                tableModel.addColumn("Nama");
+                tableModel.addColumn("Bulan");
+                tableModel.addColumn("Keterangan");
+                tableModel.addColumn("Nominal");
+
+                // Menyimpan data hasil pencarian dalam list
+                List<String[]> rows = new ArrayList<>();
+                int totalNominal = 0;
+                
+                // Tambahkan baris data hasil pencarian ke model tabel dan list
+                while (result.next()) {
+                    String untuk  = result.getString("untuk");
+                    String bulan = result.getString("bulan");
+                    String keterangan = result.getString("keterangan");
+                    String nominal = result.getString("nominal");
+                    
+                    tableModel.addRow(new Object[]{untuk, bulan, keterangan, nominal});
+                    rows.add(new String[]{untuk, bulan, keterangan, nominal});
+                    
+                    int Nominal = Integer.parseInt(nominal);
+                    totalNominal = totalNominal + Nominal;
+                }
+                
+                // Buat JTable dengan menggunakan model tabel
+                JTable table = new JTable(tableModel);
+
+                // Tampilkan tabel dalam JScrollPane
+                JScrollPane scrollPane = new JScrollPane(table);
+                
+                // Menambahkan row untuk total nominal
+                tableModel.addRow(new Object[]{});
+                tableModel.addRow(new Object[]{"Total Nominal", "", "", totalNominal});
+                rows.forEach((_item) -> {
+                    tableModel.addRow(new Object[]{"Nama", _item});
+                    
+                });
+                
+                // Tampilkan dialog prompt dengan hasil pencarian
+                Object[] options = {"Lunas", "Batal"};
+                int option = JOptionPane.showOptionDialog(null, scrollPane, "Hasil Pencarian", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+                
+                // Jika pengguna memilih tombol "Lunas", tampilkan struk pembayaran
+                if (option == 0) {
+                    // Membuat model tabel
+                    DefaultTableModel tableModel2 = new DefaultTableModel();
+                    for (String[] data : rows) {
+                        tableModel2.addRow(new Object[]{});
+                    }
+
+                    // Buat JTable dengan menggunakan model tabel
+                    JTable table2 = new JTable(tableModel2);
+
+                    // Tampilkan tabel dalam JScrollPane
+                    JScrollPane scrollPane2 = new JScrollPane(table2);
+
+                    Object[] options2 = {"Cetak"};
+                    int option2 = JOptionPane.showOptionDialog(null, scrollPane2, "Cetak Hasil", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options2, null);
+                }
+
+                // Tutup koneksi database
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+private void printTable(List<String[]> rows) {
+    
 }
+    
+
+
+
+ 
+        private static class jComboBox2 {
+
+            private static void removeAllItems() {
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+
+
+            private static Object getSelectedItem() {
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+
+            private static void addItem(String nama) {
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+
+            public jComboBox2() {
+            }
+
+
+
+        }
+
+private boolean checkDataExistsInTagihan(String searchCriteria) throws SQLException {
+        // Query to check if the data exists in the tagihan table
+        String query = "SELECT * FROM tagihan WHERE untuk = '" + searchCriteria + "'";
+
+        Connection conn = Koneksi.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(query);
+
+        boolean dataFound = rs.next();
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return dataFound;
+    }
+
+        private String retrievePhoneNumberFromDataWarga(String searchCriteria) throws SQLException {
+            // Query to retrieve the phone number from the data_warga table
+            String query = "SELECT no_hp FROM data_warga WHERE <your_search_criteria>";
+
+            Connection conn = Koneksi.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            String phoneNumber = "";
+
+            if (rs.next()) {
+                phoneNumber = rs.getString("no_hp");
+            }
+
+            rs.close();
+            stmt.close();
+            conn.close();
+
+            return phoneNumber;
+        }
+
+        private String generateInvoiceDetailsFromTagihan(String searchCriteria) throws SQLException {
+            // Query to retrieve the invoice details from the tagihan table
+            String query = "SELECT nama, nominal, keterangan FROM tagihan WHERE <your_search_criteria>";
+
+            Connection conn = Koneksi.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            String invoiceDetails = "";
+
+            while (rs.next()) {
+                String nama = rs.getString("nama");
+                int nominal = rs.getInt("nominal");
+                String keterangan = rs.getString("keterangan");
+
+                // Append the invoice details to the invoiceDetails string
+                invoiceDetails += "Nama: " + nama + ", Nominal: " + nominal + ", Keterangan: " + keterangan + "\n";
+            }
+
+            rs.close();
+            stmt.close();
+            conn.close();
+
+            return invoiceDetails;
+        }
+}
+        
+
