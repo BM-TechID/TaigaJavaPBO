@@ -32,22 +32,23 @@ public class DataWarga extends javax.swing.JFrame {
         // Mengatur ukuran default untuk tablet
         int tabletWidth = 800;
         int tabletHeight = 600;
-        
+
         // Menambah faktor skala
         double scale = 1.2; // Faktor skala 1.2 akan membesarkan ukuran frame sebesar 20%
         int scaledWidth = (int) (tabletWidth * scale);
         int scaledHeight = (int) (tabletHeight * scale);
-        
+
         Dimension scaledSize = new Dimension(scaledWidth, scaledHeight);
         setPreferredSize(scaledSize);
-        
+
         // Mengatur warna latar belakang menjadi putih
         getContentPane().setBackground(Color.WHITE);
-        
+
         pack(); // Atur ukuran frame secara otomatis
         setVisible(true);
-        
-        refreshTableData(); // Update pada tabel data
+
+        // Mengatur posisi frame di tengah layar
+        setLocationRelativeTo(null);
         
         
     }
@@ -372,7 +373,7 @@ public class DataWarga extends javax.swing.JFrame {
     private void btnDashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboardActionPerformed
         // TODO add your handling code here:DataWarga dataWarga = new DataWarga();
         this.dispose(); // Menutup frame saat ini
-        DataWarga dashboardmain = new DataWarga();
+        DashboardMain dashboardmain = new DashboardMain();
         dashboardmain.setVisible(true);
         
 

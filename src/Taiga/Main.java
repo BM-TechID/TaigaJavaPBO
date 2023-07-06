@@ -20,22 +20,25 @@ public class Main extends javax.swing.JFrame {
         initComponents();
         
          // Mengatur ukuran default untuk tablet
-        int tabletWidth = 680;
-        int tabletHeight = 538;
-        
+        int tabletWidth = 800;
+        int tabletHeight = 600;
+
         // Menambah faktor skala
         double scale = 1.2; // Faktor skala 1.2 akan membesarkan ukuran frame sebesar 20%
         int scaledWidth = (int) (tabletWidth * scale);
         int scaledHeight = (int) (tabletHeight * scale);
-        
+
         Dimension scaledSize = new Dimension(scaledWidth, scaledHeight);
         setPreferredSize(scaledSize);
-        
+
         // Mengatur warna latar belakang menjadi putih
         getContentPane().setBackground(Color.WHITE);
-        
+
         pack(); // Atur ukuran frame secara otomatis
         setVisible(true);
+
+        // Mengatur posisi frame di tengah layar
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -47,26 +50,11 @@ public class Main extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jPanel2.setBackground(new java.awt.Color(255, 189, 48));
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 40, Short.MAX_VALUE)
-        );
-
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 40));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/Background.png"))); // NOI18N
         jLabel1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -74,7 +62,7 @@ public class Main extends javax.swing.JFrame {
                 jLabel1MouseMoved(evt);
             }
         });
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-50, 0, 900, 570));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 0, 1030, 670));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -133,6 +121,5 @@ public class Main extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
 }

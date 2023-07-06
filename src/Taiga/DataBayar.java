@@ -38,6 +38,30 @@ public class DataBayar extends javax.swing.JFrame {
 private DefaultTableModel model;
     public DataBayar() {
         initComponents();
+        
+        // Mengatur ukuran default untuk tablet
+        int tabletWidth = 800;
+        int tabletHeight = 600;
+
+        // Menambah faktor skala
+        double scale = 1.2; // Faktor skala 1.2 akan membesarkan ukuran frame sebesar 20%
+        int scaledWidth = (int) (tabletWidth * scale);
+        int scaledHeight = (int) (tabletHeight * scale);
+
+        Dimension scaledSize = new Dimension(scaledWidth, scaledHeight);
+        setPreferredSize(scaledSize);
+
+        // Mengatur warna latar belakang menjadi putih
+        getContentPane().setBackground(Color.WHITE);
+
+        pack(); // Atur ukuran frame secara otomatis
+        setVisible(true);
+
+        // Mengatur posisi frame di tengah layar
+        setLocationRelativeTo(null);
+
+
+
         // Initialize the model for jTable2
         model = new DefaultTableModel(
                 new Object[][] {
@@ -80,23 +104,7 @@ private DefaultTableModel model;
     refreshTableData();
         
         JTable jTable2 = new javax.swing.JTable();
-        // Mengatur ukuran default untuk tablet
-        int tabletWidth = 800;
-        int tabletHeight = 600;
         
-        // Menambah faktor skala
-        double scale = 1.2; // Faktor skala 1.2 akan membesarkan ukuran frame sebesar 20%
-        int scaledWidth = (int) (tabletWidth * scale);
-        int scaledHeight = (int) (tabletHeight * scale);
-        
-        Dimension scaledSize = new Dimension(scaledWidth, scaledHeight);
-        setPreferredSize(scaledSize);
-        
-        // Mengatur warna latar belakang menjadi putih
-        getContentPane().setBackground(Color.WHITE);
-        
-        pack(); // Atur ukuran frame secara otomatis
-        setVisible(true);
     }
 
     /**
@@ -302,10 +310,10 @@ private DefaultTableModel model;
                     .addComponent(btnCari))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(135, Short.MAX_VALUE))
+                .addContainerGap(140, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 60, 760, 620));
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 50, 760, 620));
 
         jPanel4.setBackground(new java.awt.Color(255, 153, 0));
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 5));
@@ -349,7 +357,7 @@ private DefaultTableModel model;
     private void btnDashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboardActionPerformed
         // TODO add your handling code here:DataWarga dataWarga = new DataWarga();
         this.dispose(); // Menutup frame saat ini
-        DataBayar dashboardmain = new DataBayar();
+        DashboardMain dashboardmain = new DashboardMain();
         dashboardmain.setVisible(true);
         
 

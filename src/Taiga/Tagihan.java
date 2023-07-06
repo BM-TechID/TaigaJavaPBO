@@ -60,6 +60,27 @@ private DefaultTableModel model;
     public Tagihan() {
         initComponents();
         
+        // Mengatur ukuran default untuk tablet
+        int tabletWidth = 800;
+        int tabletHeight = 600;
+
+        // Menambah faktor skala
+        double scale = 1.2; // Faktor skala 1.2 akan membesarkan ukuran frame sebesar 20%
+        int scaledWidth = (int) (tabletWidth * scale);
+        int scaledHeight = (int) (tabletHeight * scale);
+
+        Dimension scaledSize = new Dimension(scaledWidth, scaledHeight);
+        setPreferredSize(scaledSize);
+
+        // Mengatur warna latar belakang menjadi putih
+        getContentPane().setBackground(Color.WHITE);
+
+        pack(); // Atur ukuran frame secara otomatis
+        setVisible(true);
+
+        // Mengatur posisi frame di tengah layar
+        setLocationRelativeTo(null);
+        
          // Initialize the model for jTable2
     model = new DefaultTableModel(
         new Object[][] {
@@ -105,24 +126,7 @@ private DefaultTableModel model;
 
 
             
-        // Mengatur ukuran default untuk tablet
-        int tabletWidth = 800;
-        int tabletHeight = 600;
-        
-        // Menambah faktor skala
-        double scale = 1.2; // Faktor skala 1.2 akan membesarkan ukuran frame sebesar 20%
-        int scaledWidth = (int) (tabletWidth * scale);
-        int scaledHeight = (int) (tabletHeight * scale);
-        
-        Dimension scaledSize = new Dimension(scaledWidth, scaledHeight);
-        setPreferredSize(scaledSize);
-        
-        // Mengatur warna latar belakang menjadi putih
-        getContentPane().setBackground(Color.WHITE);
-        
-        pack(); // Atur ukuran frame secara otomatis
-        setVisible(true);
-
+ 
 
         
 
@@ -443,7 +447,7 @@ private DefaultTableModel model;
     private void btnDashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboardActionPerformed
         // TODO add your handling code here:DataWarga dataWarga = new DataWarga();
         this.dispose(); // Menutup frame saat ini
-        Tagihan dashboardmain = new Tagihan();
+         DashboardMain dashboardmain = new DashboardMain();
         dashboardmain.setVisible(true);
         
 
