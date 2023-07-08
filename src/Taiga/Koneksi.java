@@ -13,7 +13,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Koneksi {
-    private static final String URL = "jdbc:mysql://localhost:3306/db_crud";
+    private static final String URL = "jdbc:mysql://localhost:3306/taiga";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "";
 

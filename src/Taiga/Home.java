@@ -24,20 +24,23 @@ public class Home extends javax.swing.JFrame {
         // Mengatur ukuran default untuk tablet
         int tabletWidth = 800;
         int tabletHeight = 600;
-        
+
         // Menambah faktor skala
         double scale = 1.2; // Faktor skala 1.2 akan membesarkan ukuran frame sebesar 20%
         int scaledWidth = (int) (tabletWidth * scale);
         int scaledHeight = (int) (tabletHeight * scale);
-        
+
         Dimension scaledSize = new Dimension(scaledWidth, scaledHeight);
         setPreferredSize(scaledSize);
-        
+
         // Mengatur warna latar belakang menjadi putih
         getContentPane().setBackground(Color.WHITE);
-        
+
         pack(); // Atur ukuran frame secara otomatis
         setVisible(true);
+
+        // Mengatur posisi frame di tengah layar
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -125,9 +128,9 @@ public class Home extends javax.swing.JFrame {
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
                 Dashboard2AncestorAdded(evt);
             }
-            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
-            }
             public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
             }
         });
         jPanel1.add(Dashboard2);
@@ -185,7 +188,7 @@ public class Home extends javax.swing.JFrame {
         getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 0, 50, 60));
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/Dashboard-art.png"))); // NOI18N
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, -10, 500, 590));
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 0, 560, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
