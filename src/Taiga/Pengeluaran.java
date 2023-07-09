@@ -6,6 +6,14 @@ package Taiga;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.NumberFormat;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -19,7 +27,7 @@ public class Pengeluaran extends javax.swing.JFrame {
      */
     public Pengeluaran() {
         initComponents();
-        
+
         // Mengatur ukuran default untuk tablet
         int tabletWidth = 800;
         int tabletHeight = 600;
@@ -40,6 +48,7 @@ public class Pengeluaran extends javax.swing.JFrame {
 
         // Mengatur posisi frame di tengah layar
         setLocationRelativeTo(null);
+
     }
 
     /**
@@ -63,6 +72,22 @@ public class Pengeluaran extends javax.swing.JFrame {
         btnPengaturan = new javax.swing.JButton();
         btnPemasukan = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        TxtNominal = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        TxtKeterangan = new javax.swing.JTextArea();
+        BtnCatat = new javax.swing.JButton();
+        BtnBersihkan = new javax.swing.JButton();
+        BtnHapus = new javax.swing.JButton();
+        BtnUpdate = new javax.swing.JButton();
+        BtnCari = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        TxtCari = new javax.swing.JTextField();
+        BtnEdit1 = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        TxtTotalUang = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
 
@@ -196,17 +221,101 @@ public class Pengeluaran extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 754, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 614, Short.MAX_VALUE)
-        );
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Tanggal", "Nominal", "Keterangan"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(7, 184, 750, -1));
+
+        TxtNominal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TxtNominalActionPerformed(evt);
+            }
+        });
+        jPanel3.add(TxtNominal, new org.netbeans.lib.awtextra.AbsoluteConstraints(511, 9, 240, -1));
+
+        TxtKeterangan.setColumns(20);
+        TxtKeterangan.setRows(5);
+        jScrollPane2.setViewportView(TxtKeterangan);
+
+        jPanel3.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(511, 38, 240, -1));
+
+        BtnCatat.setText("Catat");
+        BtnCatat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnCatatActionPerformed(evt);
+            }
+        });
+        jPanel3.add(BtnCatat, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 140, 150, -1));
+
+        BtnBersihkan.setText("Bersihkan");
+        jPanel3.add(BtnBersihkan, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 140, -1, -1));
+
+        BtnHapus.setText("Hapus");
+        BtnHapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnHapusActionPerformed(evt);
+            }
+        });
+        jPanel3.add(BtnHapus, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 340, -1));
+
+        BtnUpdate.setText("Update");
+        BtnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnUpdateActionPerformed(evt);
+            }
+        });
+        jPanel3.add(BtnUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 340, -1));
+
+        BtnCari.setText("Cari");
+        BtnCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnCariActionPerformed(evt);
+            }
+        });
+        jPanel3.add(BtnCari, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 60, 110, -1));
+
+        jLabel5.setText("Nominal");
+        jPanel3.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(418, 9, 86, 22));
+
+        jLabel6.setText("Keterangan");
+        jPanel3.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(419, 38, 86, 22));
+
+        TxtCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TxtCariActionPerformed(evt);
+            }
+        });
+        jPanel3.add(TxtCari, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 214, -1));
+
+        BtnEdit1.setText("Edit");
+        BtnEdit1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnEdit1ActionPerformed(evt);
+            }
+        });
+        jPanel3.add(BtnEdit1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 340, -1));
+
+        jLabel7.setText("Total Uang");
+        jPanel3.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 70, 20));
+
+        TxtTotalUang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TxtTotalUangActionPerformed(evt);
+            }
+        });
+        jPanel3.add(TxtTotalUang, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 10, 270, -1));
 
         getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 50, 760, 620));
 
@@ -255,11 +364,10 @@ public class Pengeluaran extends javax.swing.JFrame {
     private void btnDashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboardActionPerformed
         // TODO add your handling code here:DataWarga dataWarga = new DataWarga();
         this.dispose(); // Menutup frame saat ini
-         DashboardMain dashboardmain = new DashboardMain();
+        DashboardMain dashboardmain = new DashboardMain();
         dashboardmain.setVisible(true);
-        
 
-            
+
     }//GEN-LAST:event_btnDashboardActionPerformed
 
     private void btnDataWargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDataWargaActionPerformed
@@ -283,12 +391,44 @@ public class Pengeluaran extends javax.swing.JFrame {
         pemasukan.setVisible(true);
     }//GEN-LAST:event_btnPemasukanActionPerformed
 
+    private void BtnCatatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCatatActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnCatatActionPerformed
+
+    private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnHapusActionPerformed
+
+    private void BtnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnUpdateActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnUpdateActionPerformed
+
+    private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnCariActionPerformed
+
+    private void TxtNominalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtNominalActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TxtNominalActionPerformed
+
+    private void TxtCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtCariActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TxtCariActionPerformed
+
+    private void BtnEdit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEdit1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnEdit1ActionPerformed
+
+    private void TxtTotalUangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtTotalUangActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TxtTotalUangActionPerformed
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-       //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
@@ -320,6 +460,16 @@ public class Pengeluaran extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BtnBersihkan;
+    private javax.swing.JButton BtnCari;
+    private javax.swing.JButton BtnCatat;
+    private javax.swing.JButton BtnEdit1;
+    private javax.swing.JButton BtnHapus;
+    private javax.swing.JButton BtnUpdate;
+    private javax.swing.JTextField TxtCari;
+    private javax.swing.JTextArea TxtKeterangan;
+    private javax.swing.JTextField TxtNominal;
+    private javax.swing.JTextField TxtTotalUang;
     private javax.swing.JButton btnDashboard;
     private javax.swing.JButton btnDataBayar;
     private javax.swing.JButton btnDataWarga;
@@ -330,9 +480,16 @@ public class Pengeluaran extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
+
 }
