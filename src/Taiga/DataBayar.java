@@ -418,7 +418,7 @@ public class DataBayar extends javax.swing.JFrame {
         } catch (DocumentException ex) {
             Logger.getLogger(DataBayar.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         refreshTableData();
 
     }//GEN-LAST:event_btnCariActionPerformed
@@ -625,9 +625,15 @@ public class DataBayar extends javax.swing.JFrame {
                 int option = JOptionPane.showOptionDialog(null, scrollPane, "Hasil Pencarian", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 
                 String keterangan = untuk + " Melakukan Pelunasan";
+                
+                // Memanggil fungsi updateTotal dengan totalNominal yang akan mengupdate tabel total
+                updateTotal(totalNominal);
+                
 
                 // Menulis data output yang dihasilak ke tabel total_uang
                 writeTotalUang(totalNominal, keterangan);
+                
+                
 
                 // Jika pengguna memilih tombol "Lunas", tampilkan struk pembayaran dan cetak
                 if (option == 0) {
@@ -801,10 +807,47 @@ public class DataBayar extends javax.swing.JFrame {
             statement.setString(4, keterangan);
             statement.executeUpdate();
             System.out.println("Data berhasil ditambahkan ke tabel total_uang.");
+
         } catch (SQLException e) {
             System.out.println("Terjadi kesalahan saat menulis data ke tabel total_uang: " + e.getMessage());
         }
     }
+
+public static void updateTotal(double totalNominal) {
+    try (Connection connection = getConnection()) {
+        // Mendapatkan nilai nominal sebelumnya dari tabel total
+        double nominalSebelumnya = getNominalSebelumnya(connection);
+
+        // Menghitung nilai total yang akan disimpan ke dalam tabel total
+        double total = nominalSebelumnya + totalNominal;
+
+        String query = "UPDATE total SET nominal = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        statement.setDouble(1, total);
+        statement.executeUpdate();
+    } catch (SQLException e) {
+        System.out.println("Terjadi kesalahan saat melakukan operasi update pada tabel total: " + e.getMessage());
+    }
+}
+
+private static double getNominalSebelumnya(Connection connection) {
+    double nominalSebelumnya = 0.0;
+    try {
+        String query = "SELECT nominal FROM total";
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        if (resultSet.next()) {
+            nominalSebelumnya = resultSet.getDouble("nominal");
+        }
+        resultSet.close();
+        statement.close();
+    } catch (SQLException e) {
+        System.out.println("Terjadi kesalahan saat mendapatkan nilai nominal sebelumnya: " + e.getMessage());
+    }
+    return nominalSebelumnya;
+}
+
 
     private static class jComboBox2 {
 

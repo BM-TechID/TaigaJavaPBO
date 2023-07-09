@@ -161,10 +161,15 @@ public class Home extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 490, -1, -1));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 490, -1, -1));
 
-        jButton2.setText("Laporan");
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 490, -1, -1));
+        jButton2.setText("Pengeluaran");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 490, -1, -1));
 
         jButton3.setText("Pengaturan");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -172,7 +177,7 @@ public class Home extends javax.swing.JFrame {
                 jButton3ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 490, -1, -1));
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 490, -1, -1));
 
         Logout.setBackground(new java.awt.Color(255, 153, 0));
         Logout.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -206,6 +211,9 @@ public class Home extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+          this.dispose(); // Menutup frame saat ini
+        Pengaturan pengaturan = new Pengaturan();
+        pengaturan.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void Dashboard2AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_Dashboard2AncestorAdded
@@ -227,6 +235,13 @@ public class Home extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_LogoutActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        this.dispose(); // Menutup frame saat ini
+        Pengeluaran pengeluaran = new Pengeluaran();
+        pengeluaran.setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments

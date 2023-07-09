@@ -4,17 +4,33 @@
  */
 package Taiga;
 
+import static Taiga.Koneksi.getConnection;
+import com.itextpdf.text.DocumentException;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.FileNotFoundException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.UUID;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -49,6 +65,15 @@ public class Pengeluaran extends javax.swing.JFrame {
         // Mengatur posisi frame di tengah layar
         setLocationRelativeTo(null);
 
+        // menampilkan jumlah saldo yang tersedia
+        editText();
+
+        //tampilakn tabel
+        tampilkanDataTabel();
+
+        //refresh table
+        tampilkanDataTabel();
+
     }
 
     /**
@@ -80,12 +105,10 @@ public class Pengeluaran extends javax.swing.JFrame {
         BtnCatat = new javax.swing.JButton();
         BtnBersihkan = new javax.swing.JButton();
         BtnHapus = new javax.swing.JButton();
-        BtnUpdate = new javax.swing.JButton();
         BtnCari = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         TxtCari = new javax.swing.JTextField();
-        BtnEdit1 = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         TxtTotalUang = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
@@ -257,10 +280,15 @@ public class Pengeluaran extends javax.swing.JFrame {
                 BtnCatatActionPerformed(evt);
             }
         });
-        jPanel3.add(BtnCatat, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 140, 150, -1));
+        jPanel3.add(BtnCatat, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 140, 80, -1));
 
         BtnBersihkan.setText("Bersihkan");
-        jPanel3.add(BtnBersihkan, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 140, -1, -1));
+        BtnBersihkan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnBersihkanActionPerformed(evt);
+            }
+        });
+        jPanel3.add(BtnBersihkan, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 140, 80, -1));
 
         BtnHapus.setText("Hapus");
         BtnHapus.addActionListener(new java.awt.event.ActionListener() {
@@ -268,15 +296,7 @@ public class Pengeluaran extends javax.swing.JFrame {
                 BtnHapusActionPerformed(evt);
             }
         });
-        jPanel3.add(BtnHapus, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 340, -1));
-
-        BtnUpdate.setText("Update");
-        BtnUpdate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnUpdateActionPerformed(evt);
-            }
-        });
-        jPanel3.add(BtnUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 340, -1));
+        jPanel3.add(BtnHapus, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 140, 70, -1));
 
         BtnCari.setText("Cari");
         BtnCari.addActionListener(new java.awt.event.ActionListener() {
@@ -284,7 +304,7 @@ public class Pengeluaran extends javax.swing.JFrame {
                 BtnCariActionPerformed(evt);
             }
         });
-        jPanel3.add(BtnCari, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 60, 110, -1));
+        jPanel3.add(BtnCari, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 150, 110, -1));
 
         jLabel5.setText("Nominal");
         jPanel3.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(418, 9, 86, 22));
@@ -297,15 +317,7 @@ public class Pengeluaran extends javax.swing.JFrame {
                 TxtCariActionPerformed(evt);
             }
         });
-        jPanel3.add(TxtCari, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 214, -1));
-
-        BtnEdit1.setText("Edit");
-        BtnEdit1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnEdit1ActionPerformed(evt);
-            }
-        });
-        jPanel3.add(BtnEdit1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 340, -1));
+        jPanel3.add(TxtCari, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 214, -1));
 
         jLabel7.setText("Total Uang");
         jPanel3.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 70, 20));
@@ -391,20 +403,82 @@ public class Pengeluaran extends javax.swing.JFrame {
         pemasukan.setVisible(true);
     }//GEN-LAST:event_btnPemasukanActionPerformed
 
+    private String generateKodeUnik() {
+        String kode = UUID.randomUUID().toString();
+        kode = kode.replaceAll("-", "").substring(0, 10); // Mengambil 10 karakter pertama
+        return kode;
+    }
+
     private void BtnCatatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCatatActionPerformed
         // TODO add your handling code here:
+        try (Connection connection = getConnection()) {
+            String nominalStr = TxtNominal.getText();
+            String keterangan = TxtKeterangan.getText();
+
+            double nominal = Double.parseDouble(nominalStr);
+
+            LocalDate tanggalNow = LocalDate.now();
+            Date tanggal = Date.valueOf(tanggalNow);
+
+            String kode = generateKodeUnik();
+
+            // Mengurangi saldo dengan nilai nominal
+            kurangiSaldo(nominal);
+
+            String query = "INSERT INTO pengeluaran (kode, tanggal, nominal, keterangan) VALUES (?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, kode);
+            statement.setDate(2, tanggal);
+            statement.setDouble(3, nominal);
+            statement.setString(4, keterangan);
+            statement.executeUpdate();
+
+            System.out.println("Data berhasil ditambahkan ke tabel pengeluaran.");
+            editText();
+
+            TxtNominal.setText("");
+            TxtKeterangan.setText("");
+
+            //refresh
+            tampilkanDataTabel();
+        } catch (SQLException e) {
+            System.out.println("Terjadi kesalahan saat mencatat data ke tabel pengeluaran: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Terjadi kesalahan saat mengambil nilai nominal: " + e.getMessage());
+        }
     }//GEN-LAST:event_BtnCatatActionPerformed
 
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_BtnHapusActionPerformed
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow != -1) { // Memastikan ada baris yang dipilih
+            int confirmDialog = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin menghapus data ini?",
+                    "Konfirmasi Penghapusan", JOptionPane.YES_NO_OPTION);
+            if (confirmDialog == JOptionPane.YES_OPTION) {
+                DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+                int modelRow = jTable1.convertRowIndexToModel(selectedRow);
+                String kode = model.getValueAt(modelRow, 0).toString();
 
-    private void BtnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnUpdateActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BtnUpdateActionPerformed
+                hapusData(kode); // Panggil fungsi hapusData dengan parameter kode
+
+                model.removeRow(modelRow);
+                System.out.println("Data berhasil dihapus dari tabel.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Pilih baris yang ingin dihapus.", "Peringatan", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_BtnHapusActionPerformed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
         // TODO add your handling code here:
+                // Get the search criteria from the input field
+        // Ambil kriteria pencarian dari input field
+        String searchCriteria = TxtCari.getText();
+        performSearch(searchCriteria);
+
+        
+ 
+
     }//GEN-LAST:event_BtnCariActionPerformed
 
     private void TxtNominalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtNominalActionPerformed
@@ -415,13 +489,15 @@ public class Pengeluaran extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_TxtCariActionPerformed
 
-    private void BtnEdit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEdit1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BtnEdit1ActionPerformed
-
     private void TxtTotalUangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtTotalUangActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_TxtTotalUangActionPerformed
+
+    private void BtnBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBersihkanActionPerformed
+        // TODO add your handling code here:
+        TxtNominal.setText("");
+        TxtKeterangan.setText("");
+    }//GEN-LAST:event_BtnBersihkanActionPerformed
 
     /**
      * @param args the command line arguments
@@ -463,9 +539,7 @@ public class Pengeluaran extends javax.swing.JFrame {
     private javax.swing.JButton BtnBersihkan;
     private javax.swing.JButton BtnCari;
     private javax.swing.JButton BtnCatat;
-    private javax.swing.JButton BtnEdit1;
     private javax.swing.JButton BtnHapus;
-    private javax.swing.JButton BtnUpdate;
     private javax.swing.JTextField TxtCari;
     private javax.swing.JTextArea TxtKeterangan;
     private javax.swing.JTextField TxtNominal;
@@ -491,5 +565,148 @@ public class Pengeluaran extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
+
+// ...
+    private void tampilkanDataTabel() {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0); // Menghapus semua baris dalam tabel
+
+        try (Connection connection = getConnection()) {
+            String query = "SELECT tanggal, nominal, keterangan FROM pengeluaran";
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String tanggal = resultSet.getString("tanggal");
+                int nominal = (int) resultSet.getDouble("nominal");
+                String keterangan = resultSet.getString("keterangan");
+
+                model.addRow(new Object[]{tanggal, nominal, keterangan});
+            }
+
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println("Terjadi kesalahan saat mengambil data dari tabel: " + e.getMessage());
+        }
+    }
+
+    private void editText() {
+        try (Connection connection = getConnection()) {
+            String query = "SELECT nominal FROM total";
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                double nominal = resultSet.getDouble("nominal");
+
+                // Mengubah nilai nominal menjadi format Rupiah
+                NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
+                String nominalFormatted = formatRupiah.format(nominal);
+
+                TxtTotalUang.setText(nominalFormatted);
+            }
+
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println("Terjadi kesalahan saat mengambil data dari tabel total: " + e.getMessage());
+        }
+    }
+
+    private void kurangiSaldo(double nominal) {
+        try (Connection connection = getConnection()) {
+            // Mendapatkan nilai saldo sebelumnya dari tabel total
+            double saldoSebelumnya = getSaldoSebelumnya(connection);
+
+            // Mengurangi saldo dengan nilai nominal
+            double saldoTerupdate = saldoSebelumnya - nominal;
+
+            // Update nilai saldo dalam tabel total
+            String query = "UPDATE total SET nominal = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setDouble(1, saldoTerupdate);
+            statement.executeUpdate();
+
+            System.out.println("Saldo berhasil diperbarui.");
+        } catch (SQLException e) {
+            System.out.println("Terjadi kesalahan saat mengurangi saldo: " + e.getMessage());
+        }
+    }
+
+    private double getSaldoSebelumnya(Connection connection) throws SQLException {
+        double saldoSebelumnya = 0;
+        String query = "SELECT nominal FROM total";
+        PreparedStatement statement = connection.prepareStatement(query);
+        ResultSet resultSet = statement.executeQuery();
+        if (resultSet.next()) {
+            saldoSebelumnya = resultSet.getDouble("nominal");
+        }
+        resultSet.close();
+        statement.close();
+        return saldoSebelumnya;
+    }
+
+    private void hapusData(String kode) {
+        try (Connection connection = getConnection()) {
+            String query = "DELETE FROM pengeluaran WHERE kode = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, kode);
+            int rowsAffected = statement.executeUpdate();
+
+            System.out.println("Data berhasil dihapus dari tabel pengeluaran. Jumlah data terhapus: " + rowsAffected);
+        } catch (SQLException e) {
+            System.out.println("Terjadi kesalahan saat menghapus data dari tabel pengeluaran: " + e.getMessage());
+        }
+    }
+    
+    private void performSearch(String searchCriteria) {
+    // Menghubungkan ke database
+    Connection conn = null;
+    try {
+        conn = Koneksi.getConnection();
+    } catch (SQLException ex) {
+        Logger.getLogger(Pengeluaran.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+    if (conn != null) {
+        try {
+            // Query untuk mencari data berdasarkan kriteria pencarian
+            String query = "SELECT * FROM pengeluaran WHERE kode LIKE ? OR tanggal LIKE ? OR nominal LIKE ? OR keterangan LIKE ?";
+            PreparedStatement statement = conn.prepareStatement(query);
+            String likeCriteria = "%" + searchCriteria + "%";
+            statement.setString(1, likeCriteria);
+            statement.setString(2, likeCriteria);
+            statement.setString(3, likeCriteria);
+            statement.setString(4, likeCriteria);
+
+            // Eksekusi query
+            ResultSet result = statement.executeQuery();
+
+            // Menampilkan hasil pencarian dalam pesan dan daftar
+            StringBuilder message = new StringBuilder("Hasil Pencarian:\n");
+            DefaultListModel<String> listModel = new DefaultListModel<>();
+
+            while (result.next()) {
+                String kode = result.getString("kode");
+                String tanggal = result.getString("tanggal");
+                double nominal = result.getDouble("nominal");
+                String keterangan = result.getString("keterangan");
+
+                String item = "Kode: " + kode + ", Tanggal: " + tanggal + ", Nominal: " + nominal + ", Keterangan: " + keterangan;
+                message.append(item).append("\n");
+                listModel.addElement(item);
+            }
+
+            JOptionPane.showMessageDialog(this, message.toString(), "Hasil Pencarian", JOptionPane.INFORMATION_MESSAGE);
+
+            
+           
+        } catch (SQLException e) {
+            System.out.println("Terjadi kesalahan saat melakukan pencarian: " + e.getMessage());
+        }
+    }
+}
+
 
 }
