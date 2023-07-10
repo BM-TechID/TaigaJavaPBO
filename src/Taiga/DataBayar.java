@@ -5,16 +5,24 @@
 package Taiga;
 
 import static Taiga.Koneksi.getConnection;
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -411,14 +419,18 @@ public class DataBayar extends javax.swing.JFrame {
         String searchCriteria = txtCari.getText();
 
         try {
-            // Panggil metode untuk melakukan pencarian
-            performSearch(searchCriteria);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(DataBayar.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                // Panggil metode untuk melakukan pencarian
+                performSearch(searchCriteria);
+            } catch (BadElementException ex) {
+                Logger.getLogger(DataBayar.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(DataBayar.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } catch (DocumentException ex) {
             Logger.getLogger(DataBayar.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         refreshTableData();
 
     }//GEN-LAST:event_btnCariActionPerformed
@@ -554,7 +566,7 @@ public class DataBayar extends javax.swing.JFrame {
         }
     }
 
-    private void performSearch(String searchCriteria) throws FileNotFoundException, DocumentException {
+    private void performSearch(String searchCriteria) throws FileNotFoundException, DocumentException, BadElementException, IOException {
         // Menghubungkan ke database
         Connection conn = null;
         try {
@@ -600,6 +612,8 @@ public class DataBayar extends javax.swing.JFrame {
                     tableModel.addRow(new Object[]{untuk, bulan, keterangan, nominal});
                     rows.add(new String[]{untuk, bulan, keterangan, nominal});
 
+                   
+                    rows.add(new String[]{"", "", "", ""});
                     int Nominal = Integer.parseInt(nominal);
                     totalNominal = totalNominal + Nominal;
 
@@ -626,6 +640,9 @@ public class DataBayar extends javax.swing.JFrame {
 
                 String keterangan = untuk + " Melakukan Pelunasan";
 
+                // Memanggil fungsi updateTotal dengan totalNominal yang akan mengupdate tabel total
+                updateTotal(totalNominal);
+
                 // Menulis data output yang dihasilak ke tabel total_uang
                 writeTotalUang(totalNominal, keterangan);
 
@@ -645,15 +662,36 @@ public class DataBayar extends javax.swing.JFrame {
 
                     // Memeriksa jumlah kolom tabel
                     int numColumns = table.getColumnCount();
+
                     if (numColumns > 0) {
                         // Membuat dokumen PDF
                         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
                         try {
+                            // Mendapatkan direktori kerja saat ini
+                            String workingDirectory = System.getProperty("user.dir");
+                            // Path lengkap ke file gambar latar belakang
+                            String backgroundImage = workingDirectory + File.separator + "src/Image/KopSurat.png";
+
                             // Membuat objek PdfWriter
                             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("output.pdf"));
 
                             // Membuka dokumen
                             document.open();
+
+                            // Menggambar gambar latar belakang pada setiap halaman
+                            PdfContentByte contentByte = writer.getDirectContentUnder();
+                            Image image = Image.getInstance(backgroundImage);
+                            image.scaleAbsolute(document.getPageSize());
+                            image.setAbsolutePosition(0, 0);
+                            contentByte.addImage(image);
+
+                            // Tambahkan baris kosong
+                            document.add(new Paragraph("\n"));
+
+                            // Menambahkan 5 baris paragraf kosong
+                            for (int i = 0; i < 5; i++) {
+                                document.add(new Paragraph("\n"));
+                            }
 
                             // Tambahkan judul "Struk Pembayaran" ke dokumen
                             Paragraph title = new Paragraph("Struk Pembayaran");
@@ -666,11 +704,16 @@ public class DataBayar extends javax.swing.JFrame {
                             // Membuat objek PdfPTable
                             PdfPTable pdfTable = new PdfPTable(numColumns);
 
+                            // Membuat objek Font untuk teks bold
+                            com.itextpdf.text.Font boldFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.BOLD);
+
                             // Menambahkan header kolom ke tabel
                             for (int i = 0; i < numColumns; i++) {
-                                pdfTable.addCell(table.getColumnName(i));
+                                PdfPCell headerCell = new PdfPCell(new Phrase(table.getColumnName(i), boldFont));
+                                headerCell.setBackgroundColor(new BaseColor(0xFFC727)); // Atur warna latar belakang dengan kode heksadesimal
+                                pdfTable.addCell(headerCell);
                             }
-
+                            
                             // Menambahkan data baris ke tabel
                             for (int row = 0; row < table.getRowCount(); row++) {
                                 for (int col = 0; col < numColumns; col++) {
@@ -678,6 +721,7 @@ public class DataBayar extends javax.swing.JFrame {
                                     pdfTable.addCell(value != null ? value.toString() : "");
                                 }
                             }
+                            
 
                             // Menambahkan tabel ke dokumen
                             document.add(pdfTable);
@@ -699,7 +743,7 @@ public class DataBayar extends javax.swing.JFrame {
                             String fileName = "output.pdf";
 
                             // Mendapatkan direktori kerja saat ini
-                            String workingDirectory = System.getProperty("user.dir");
+                            workingDirectory = System.getProperty("user.dir");
 
                             // Path lengkap ke file PDF
                             String filePath = workingDirectory + File.separator + fileName;
@@ -801,9 +845,45 @@ public class DataBayar extends javax.swing.JFrame {
             statement.setString(4, keterangan);
             statement.executeUpdate();
             System.out.println("Data berhasil ditambahkan ke tabel total_uang.");
+
         } catch (SQLException e) {
             System.out.println("Terjadi kesalahan saat menulis data ke tabel total_uang: " + e.getMessage());
         }
+    }
+
+    public static void updateTotal(double totalNominal) {
+        try (Connection connection = getConnection()) {
+            // Mendapatkan nilai nominal sebelumnya dari tabel total
+            double nominalSebelumnya = getNominalSebelumnya(connection);
+
+            // Menghitung nilai total yang akan disimpan ke dalam tabel total
+            double total = nominalSebelumnya + totalNominal;
+
+            String query = "UPDATE total SET nominal = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.setDouble(1, total);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Terjadi kesalahan saat melakukan operasi update pada tabel total: " + e.getMessage());
+        }
+    }
+
+    private static double getNominalSebelumnya(Connection connection) {
+        double nominalSebelumnya = 0.0;
+        try {
+            String query = "SELECT nominal FROM total";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            if (resultSet.next()) {
+                nominalSebelumnya = resultSet.getDouble("nominal");
+            }
+            resultSet.close();
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println("Terjadi kesalahan saat mendapatkan nilai nominal sebelumnya: " + e.getMessage());
+        }
+        return nominalSebelumnya;
     }
 
     private static class jComboBox2 {

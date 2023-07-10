@@ -5,6 +5,7 @@
 package Taiga;
 
 import static Taiga.Koneksi.getConnection;
+import com.itextpdf.text.BaseColor;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -27,8 +28,12 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -41,6 +46,7 @@ import java.util.Random;
 
 import javax.swing.JOptionPane;
 import java.awt.Desktop;
+import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.ListSelectionModel;
@@ -56,10 +62,11 @@ public class Tagihan extends javax.swing.JFrame {
     /**
      * Creates new form DashboardMain
      */
-private DefaultTableModel model;
+    private DefaultTableModel model;
+
     public Tagihan() {
         initComponents();
-        
+
         // Mengatur ukuran default untuk tablet
         int tabletWidth = 800;
         int tabletHeight = 600;
@@ -80,69 +87,51 @@ private DefaultTableModel model;
 
         // Mengatur posisi frame di tengah layar
         setLocationRelativeTo(null);
-        
-         // Initialize the model for jTable2
-    model = new DefaultTableModel(
-        new Object[][] {
-            {null, null, null, null},
-            {null, null, null, null},
-            {null, null, null, null},
-            {null, null, null, null}
-        },
-        new String[] {
-            "Bulan", "Nominal", "Untuk", "Keterangan"
-        }
-    );
 
-    // Set the model for jTable2
-    jTable2.setModel(model);
-    
+        // Initialize the model for jTable2
+        model = new DefaultTableModel(
+                new Object[][]{
+                    {null, null, null, null},
+                    {null, null, null, null},
+                    {null, null, null, null},
+                    {null, null, null, null}
+                },
+                new String[]{
+                    "Bulan", "Nominal", "Untuk", "Keterangan"
+                }
+        );
+
+        // Set the model for jTable2
+        jTable2.setModel(model);
+
         // Add a MouseListener to jTable2
-    jTable2.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            int selectedRow = jTable2.getSelectedRow();
-            if (selectedRow != -1) {
-                // Perform an action with the selected row data
-                String bulan = model.getValueAt(selectedRow, 0).toString();
-                int nominal = Integer.parseInt(model.getValueAt(selectedRow, 1).toString());
-                String untuk = model.getValueAt(selectedRow, 2).toString();
-                String keterangan = model.getValueAt(selectedRow, 3).toString();
+        jTable2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int selectedRow = jTable2.getSelectedRow();
+                if (selectedRow != -1) {
+                    // Perform an action with the selected row data
+                    String bulan = model.getValueAt(selectedRow, 0).toString();
+                    int nominal = Integer.parseInt(model.getValueAt(selectedRow, 1).toString());
+                    String untuk = model.getValueAt(selectedRow, 2).toString();
+                    String keterangan = model.getValueAt(selectedRow, 3).toString();
 
-                // Example action: display the selected row data in a dialog box
-                String message = "Bulan: " + bulan + "\n"
-                        + "Nominal: " + nominal + "\n"
-                        + "Untuk: " + untuk + "\n"
-                        + "Keterangan: " + keterangan;
-                JOptionPane.showMessageDialog(null, message);
+                    // Example action: display the selected row data in a dialog box
+                    String message = "Bulan: " + bulan + "\n"
+                            + "Nominal: " + nominal + "\n"
+                            + "Untuk: " + untuk + "\n"
+                            + "Keterangan: " + keterangan;
+                    JOptionPane.showMessageDialog(null, message);
+                }
             }
-        }
-    });
+        });
 
-    // Refresh the table data
-    refreshTableData();
-        
+        // Refresh the table data
+        refreshTableData();
+
         jTable2 = new javax.swing.JTable();
 
-
-            
- 
-
-        
-
-
-
-        
     }
-    
-    
-    
-    
-
-    
-    
-    
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -447,11 +436,10 @@ private DefaultTableModel model;
     private void btnDashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboardActionPerformed
         // TODO add your handling code here:DataWarga dataWarga = new DataWarga();
         this.dispose(); // Menutup frame saat ini
-         DashboardMain dashboardmain = new DashboardMain();
+        DashboardMain dashboardmain = new DashboardMain();
         dashboardmain.setVisible(true);
-        
 
-            
+
     }//GEN-LAST:event_btnDashboardActionPerformed
 
     private void btnDataWargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDataWargaActionPerformed
@@ -481,56 +469,56 @@ private DefaultTableModel model;
 
     private void jComboBoxUntukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxUntukActionPerformed
         // TODO add your handling code here:
-          String selectedOption = jComboBoxUntuk.getSelectedItem().toString();
-    
-    // Memanggil kelas Koneksi untuk melakukan koneksi ke database
-    Connection conn = null;
-    try {
-        conn = Koneksi.getConnection();
-    } catch (SQLException ex) {
-        Logger.getLogger(Tagihan.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    
-    if (conn != null) {
+        String selectedOption = jComboBoxUntuk.getSelectedItem().toString();
+
+        // Memanggil kelas Koneksi untuk melakukan koneksi ke database
+        Connection conn = null;
         try {
-            // Query untuk mengambil data nama dari tabel data_warga
-            String query = "SELECT nama FROM data_warga";
-            Statement statement = conn.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-            
-            // Mengosongkan combo box sebelum menambahkan data baru
-            jComboBoxUntuk.removeAllItems();
-            
-            // Menambahkan opsi "Semua Warga" ke combo box
-            jComboBoxUntuk.addItem("Semua Warga");
-            
-            // Menambahkan nama-nama dari tabel data_warga ke combo box
-            while (resultSet.next()) {
-                String nama = resultSet.getString("nama");
-                jComboBoxUntuk.addItem(nama);
-            }
-            
-            // Memeriksa apakah selectedOption adalah "Semua Warga"
-            if (selectedOption.equals("Semua Warga")) {
-                jComboBoxUntuk.setSelectedIndex(0); // Mengatur pilihan pertama sebagai "Semua Warga"
-            } else {
-                // Memeriksa apakah selectedOption ada dalam combo box
-                if (jComboBoxUntuk.getItemCount() > 0 && selectedOption != null) {
-                    for (int i = 0; i < jComboBoxUntuk.getItemCount(); i++) {
-                        String item = jComboBoxUntuk.getItemAt(i);
-                        if (item.equals(selectedOption)) {
-                            jComboBoxUntuk.setSelectedIndex(i);
-                            break;
+            conn = Koneksi.getConnection();
+        } catch (SQLException ex) {
+            Logger.getLogger(Tagihan.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (conn != null) {
+            try {
+                // Query untuk mengambil data nama dari tabel data_warga
+                String query = "SELECT nama FROM data_warga";
+                Statement statement = conn.createStatement();
+                ResultSet resultSet = statement.executeQuery(query);
+
+                // Mengosongkan combo box sebelum menambahkan data baru
+                jComboBoxUntuk.removeAllItems();
+
+                // Menambahkan opsi "Semua Warga" ke combo box
+                jComboBoxUntuk.addItem("Semua Warga");
+
+                // Menambahkan nama-nama dari tabel data_warga ke combo box
+                while (resultSet.next()) {
+                    String nama = resultSet.getString("nama");
+                    jComboBoxUntuk.addItem(nama);
+                }
+
+                // Memeriksa apakah selectedOption adalah "Semua Warga"
+                if (selectedOption.equals("Semua Warga")) {
+                    jComboBoxUntuk.setSelectedIndex(0); // Mengatur pilihan pertama sebagai "Semua Warga"
+                } else {
+                    // Memeriksa apakah selectedOption ada dalam combo box
+                    if (jComboBoxUntuk.getItemCount() > 0 && selectedOption != null) {
+                        for (int i = 0; i < jComboBoxUntuk.getItemCount(); i++) {
+                            String item = jComboBoxUntuk.getItemAt(i);
+                            if (item.equals(selectedOption)) {
+                                jComboBoxUntuk.setSelectedIndex(i);
+                                break;
+                            }
                         }
                     }
                 }
+
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-            
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-    }
     }//GEN-LAST:event_jComboBoxUntukActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -588,32 +576,28 @@ private DefaultTableModel model;
 
     private void jButtonSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSimpanActionPerformed
         // TODO add your handling code here:
-        
-          // Mengambil data dari komponen GUI
-            String bulan = jComboBoxBulan.getSelectedItem().toString();
-            String nominal = txtNominal.getText();
-            String untuk = jComboBoxUntuk.getSelectedItem().toString();
-            String keterangan = txtKeterangan.getText();
+
+        // Mengambil data dari komponen GUI
+        String bulan = jComboBoxBulan.getSelectedItem().toString();
+        String nominal = txtNominal.getText();
+        String untuk = jComboBoxUntuk.getSelectedItem().toString();
+        String keterangan = txtKeterangan.getText();
         //refresh
         refreshTableData();
 
+        // Memanggil kelas Koneksi untuk melakukan koneksi ke database
+        Connection conn = null;
+        try {
+            conn = Koneksi.getConnection();
+        } catch (SQLException ex) {
+            Logger.getLogger(Tagihan.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-
-
-
-            // Memanggil kelas Koneksi untuk melakukan koneksi ke database
-            Connection conn = null;
+        if (conn != null) {
             try {
-                conn = Koneksi.getConnection();
-            } catch (SQLException ex) {
-                Logger.getLogger(Tagihan.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            if (conn != null) {
-            try {
-                 // Refresh the table data
+                // Refresh the table data
                 refreshTableData();
-    
+
                 // Query untuk menyimpan data ke tabel tagihan
                 String query = "INSERT INTO tagihan (bulan, nominal, untuk, keterangan) VALUES (?, ?, ?, ?)";
                 PreparedStatement statement = conn.prepareStatement(query);
@@ -638,31 +622,30 @@ private DefaultTableModel model;
             } catch (SQLException e) {
             }
         }
-            refreshTableData();
+        refreshTableData();
 
     }//GEN-LAST:event_jButtonSimpanActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-          // Mengosongkan inputan
+        // Mengosongkan inputan
         jComboBoxBulan.setSelectedIndex(0);
         txtNominal.setText("");
         jComboBoxUntuk.setSelectedIndex(0);
         txtKeterangan.setText("");
-        
+
         //refresh
         refreshTableData();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void btnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariActionPerformed
-            // Get the search criteria from the input field
-                // Ambil kriteria pencarian dari input field
-                String searchCriteria = txtCari.getText();
+        // Get the search criteria from the input field
+        // Ambil kriteria pencarian dari input field
+        String searchCriteria = txtCari.getText();
 
-                // Panggil metode untuk melakukan pencarian
-                performSearch(searchCriteria);
-    
-    
+        // Panggil metode untuk melakukan pencarian
+        performSearch(searchCriteria);
+
 
     }//GEN-LAST:event_btnCariActionPerformed
 
@@ -693,7 +676,7 @@ private DefaultTableModel model;
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-       //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
@@ -756,8 +739,8 @@ private DefaultTableModel model;
     private javax.swing.JTextPane txtKeterangan;
     private javax.swing.JTextField txtNominal;
     // End of variables declaration//GEN-END:variables
-  
-   // Fungsi untuk mengambil ulang data nama dari tabel data_warga
+
+    // Fungsi untuk mengambil ulang data nama dari tabel data_warga
     private void refreshComboBox() {
         // Memanggil kelas Koneksi untuk melakukan koneksi ke database
         Connection conn = null;
@@ -789,68 +772,62 @@ private DefaultTableModel model;
         }
     }
 
-        private void refreshTableData() {
-            try {
-                // Clear the existing rows in the model
-                model.setRowCount(0);
+    private void refreshTableData() {
+        try {
+            // Clear the existing rows in the model
+            model.setRowCount(0);
 
-                // Connect to the database
-                Connection conn = getConnection();
+            // Connect to the database
+            Connection conn = getConnection();
 
-                // Query to retrieve data from the tagihan table
-                String query = "SELECT * FROM tagihan";
+            // Query to retrieve data from the tagihan table
+            String query = "SELECT * FROM tagihan";
 
-                // Create a statement
-                Statement stmt = conn.createStatement();
+            // Create a statement
+            Statement stmt = conn.createStatement();
 
-                // Execute the query and get the result set
-                ResultSet rs = stmt.executeQuery(query);
+            // Execute the query and get the result set
+            ResultSet rs = stmt.executeQuery(query);
 
-                // Iterate through the result set and add rows to the model
-                while (rs.next()) {
-                    String bulan = rs.getString("bulan");
-                    int nominal = rs.getInt("nominal");
-                    String untuk = rs.getString("untuk");
-                    String keterangan = rs.getString("keterangan");
+            // Iterate through the result set and add rows to the model
+            while (rs.next()) {
+                String bulan = rs.getString("bulan");
+                int nominal = rs.getInt("nominal");
+                String untuk = rs.getString("untuk");
+                String keterangan = rs.getString("keterangan");
 
-                    model.addRow(new Object[]{bulan, nominal, untuk, keterangan});
-                }
-
-                // Close the result set, statement, and connection
-                rs.close();
-                stmt.close();
-                conn.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(Tagihan.class.getName()).log(Level.SEVERE, null, ex);
+                model.addRow(new Object[]{bulan, nominal, untuk, keterangan});
             }
+
+            // Close the result set, statement, and connection
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Tagihan.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private static class jComboBox2 {
+
+        private static void removeAllItems() {
+            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         }
 
-
-
- 
-        private static class jComboBox2 {
-
-            private static void removeAllItems() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-
-
-            private static Object getSelectedItem() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-
-            private static void addItem(String nama) {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-
-            public jComboBox2() {
-            }
-
-
-
+        private static Object getSelectedItem() {
+            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         }
 
-private boolean checkDataExistsInTagihan(String searchCriteria) throws SQLException {
+        private static void addItem(String nama) {
+            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        }
+
+        public jComboBox2() {
+        }
+
+    }
+
+    private boolean checkDataExistsInTagihan(String searchCriteria) throws SQLException {
         // Query to check if the data exists in the tagihan table
         String query = "SELECT * FROM tagihan WHERE untuk = '" + searchCriteria + "'";
 
@@ -867,55 +844,55 @@ private boolean checkDataExistsInTagihan(String searchCriteria) throws SQLExcept
         return dataFound;
     }
 
-        private String retrievePhoneNumberFromDataWarga(String searchCriteria) throws SQLException {
-            // Query to retrieve the phone number from the data_warga table
-            String query = "SELECT no_hp FROM data_warga WHERE <your_search_criteria>";
+    private String retrievePhoneNumberFromDataWarga(String searchCriteria) throws SQLException {
+        // Query to retrieve the phone number from the data_warga table
+        String query = "SELECT no_hp FROM data_warga WHERE <your_search_criteria>";
 
-            Connection conn = Koneksi.getConnection();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
+        Connection conn = Koneksi.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(query);
 
-            String phoneNumber = "";
+        String phoneNumber = "";
 
-            if (rs.next()) {
-                phoneNumber = rs.getString("no_hp");
-            }
-
-            rs.close();
-            stmt.close();
-            conn.close();
-
-            return phoneNumber;
+        if (rs.next()) {
+            phoneNumber = rs.getString("no_hp");
         }
 
-        private String generateInvoiceDetailsFromTagihan(String searchCriteria) throws SQLException {
-            // Query to retrieve the invoice details from the tagihan table
-            String query = "SELECT nama, nominal, keterangan FROM tagihan WHERE <your_search_criteria>";
+        rs.close();
+        stmt.close();
+        conn.close();
 
-            Connection conn = Koneksi.getConnection();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
+        return phoneNumber;
+    }
 
-            String invoiceDetails = "";
+    private String generateInvoiceDetailsFromTagihan(String searchCriteria) throws SQLException {
+        // Query to retrieve the invoice details from the tagihan table
+        String query = "SELECT nama, nominal, keterangan FROM tagihan WHERE <your_search_criteria>";
 
-            while (rs.next()) {
-                String nama = rs.getString("nama");
-                int nominal = rs.getInt("nominal");
-                String keterangan = rs.getString("keterangan");
+        Connection conn = Koneksi.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(query);
 
-                // Append the invoice details to the invoiceDetails string
-                invoiceDetails += "Nama: " + nama + ", Nominal: " + nominal + ", Keterangan: " + keterangan + "\n";
-            }
+        String invoiceDetails = "";
 
-            rs.close();
-            stmt.close();
-            conn.close();
+        while (rs.next()) {
+            String nama = rs.getString("nama");
+            int nominal = rs.getInt("nominal");
+            String keterangan = rs.getString("keterangan");
 
-            return invoiceDetails;
+            // Append the invoice details to the invoiceDetails string
+            invoiceDetails += "Nama: " + nama + ", Nominal: " + nominal + ", Keterangan: " + keterangan + "\n";
         }
-        
-        // kelas Untuk button cari
-        private void performSearch(String searchCriteria) {
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return invoiceDetails;
+    }
+
+    // kelas Untuk button cari
+    private void performSearch(String searchCriteria) {
         // Menghubungkan ke database
         Connection conn = null;
         try {
@@ -988,69 +965,13 @@ private boolean checkDataExistsInTagihan(String searchCriteria) throws SQLExcept
     }
 
     private void printTable(List<String[]> rows, double totalTagihan) {
-    // Format jumlah total menjadi format rupiah (Rp)
-    NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
 
-    // Menampilkan hasil pencarian dan rincian nama
-    StringBuilder messageBuilder = new StringBuilder();
-    messageBuilder.append("Rincian Nama:\n");
+        // Format jumlah total menjadi format rupiah (Rp)
+        NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
 
-    for (String[] row : rows) {
-        String bulan = row[0];
-        String nominal = row[1];
-        String untuk = row[2];
-        String keterangan = row[3];
-
-        // Tambahkan rincian nama (menggunakan salah satu nama dari string 'untuk')
-        String[] namaArray = untuk.split(",");
-        Random random = new Random();
-        String nama = namaArray[random.nextInt(namaArray.length)];
-        messageBuilder.append(nama).append("\n");
-
-        messageBuilder.append("\nBulan: ").append(bulan);
-        messageBuilder.append("\nNominal: ").append(nominal);
-        messageBuilder.append("\nUntuk: ").append(untuk);
-        messageBuilder.append("\nKeterangan: ").append(keterangan);
-        messageBuilder.append("\n-------------------\n");
-    }
-
-    // Tambahkan total tagihan ke pesan
-    messageBuilder.append("Total Tagihan: ").append(formatRupiah.format(totalTagihan));
-
-    // Tampilkan pesan hasil pencarian dengan rincian nama dan total tagihan
-    JOptionPane.showMessageDialog(null, messageBuilder.toString());
-
-    // Cetak tabel menjadi file PDF
-    Document document = new Document(PageSize.A4);
-
-    try {
-        PdfWriter.getInstance(document, new FileOutputStream("output.pdf"));
-        document.open();
-        
-        
-        
-        // Mengambil data dari kolom "untuk" sebagai nama
-        String nama = rows.get(0)[2];
-
-        // Tambahkan paragraf "Nama" ke dokumen PDF
-        Paragraph paragrafNama = new Paragraph("           Nama: " + nama);
-        document.add(paragrafNama);
-
-        // Tambahkan total tagihan ke PDF
-        document.add(new Paragraph("           Total Tagihan: " + formatRupiah.format(totalTagihan) + "\n\n"));
-        
-        document.add(new Paragraph("           Rincian Tagihan: \n\n"));
-
-        PdfPTable table = new PdfPTable(4);
-
-        PdfPCell cell = new PdfPCell();
-        cell.setColspan(4);
-        table.addCell(cell);
-
-        table.addCell("Bulan");
-        table.addCell("Nominal");
-        table.addCell("Untuk");
-        table.addCell("Keterangan");
+        // Menampilkan hasil pencarian dan rincian nama
+        StringBuilder messageBuilder = new StringBuilder();
+        messageBuilder.append("Rincian Nama:\n");
 
         for (String[] row : rows) {
             String bulan = row[0];
@@ -1058,51 +979,126 @@ private boolean checkDataExistsInTagihan(String searchCriteria) throws SQLExcept
             String untuk = row[2];
             String keterangan = row[3];
 
-            table.addCell(bulan);
-            table.addCell(nominal);
-            table.addCell(untuk);
-            table.addCell(keterangan);
+            // Tambahkan rincian nama (menggunakan salah satu nama dari string 'untuk')
+            String[] namaArray = untuk.split(",");
+            Random random = new Random();
+            String nama = namaArray[random.nextInt(namaArray.length)];
+            messageBuilder.append(nama).append("\n");
+
+            messageBuilder.append("\nBulan: ").append(bulan);
+            messageBuilder.append("\nNominal: ").append(nominal);
+            messageBuilder.append("\nUntuk: ").append(untuk);
+            messageBuilder.append("\nKeterangan: ").append(keterangan);
+            messageBuilder.append("\n-------------------\n");
         }
 
-        document.add(table);
+        // Tambahkan total tagihan ke pesan
+        messageBuilder.append("Total Tagihan: ").append(formatRupiah.format(totalTagihan));
 
+        // Tampilkan pesan hasil pencarian dengan rincian nama dan total tagihan
+        JOptionPane.showMessageDialog(null, messageBuilder.toString());
 
-        document.close();
+        // Cetak tabel menjadi file PDF
+        Document document = new Document(PageSize.A4);
 
-        JOptionPane.showMessageDialog(null, "Tabel telah dicetak ke file PDF.");
-        
-        // Nama file PDF yang akan dibuka
-        String fileName = "output.pdf";
-
-        // Mendapatkan direktori kerja saat ini
-        String workingDirectory = System.getProperty("user.dir");
-
-        // Path lengkap ke file PDF
-        String filePath = workingDirectory + File.separator + fileName;
-
-        // Membuka file PDF di browser default
         try {
-            File file = new File(filePath);
-            Desktop.getDesktop().open(file);
-        } catch (IOException e) {
-            // Tangani jika terjadi kesalahan saat membuka file
+            PdfWriter.getInstance(document, new FileOutputStream("output.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("output.pdf"));
+            document.open();
+
+            // Mendapatkan direktori kerja saat ini
+            String workingDirectory = System.getProperty("user.dir");
+
+            // Path lengkap ke file gambar latar belakang
+            String backgroundImage = workingDirectory + File.separator + "src/Image/KopSurat.png";
+
+            // Menggambar gambar latar belakang pada setiap halaman
+            PdfContentByte contentByte = writer.getDirectContentUnder();
+            Image image = Image.getInstance(backgroundImage);
+            image.scaleAbsolute(document.getPageSize());
+            image.setAbsolutePosition(0, 0);
+            contentByte.addImage(image);
+
+            // Mengambil data dari kolom "untuk" sebagai nama
+            String nama = rows.get(0)[2];
+
+            for (int i = 0; i < 7; i++) {
+                document.add(new Paragraph("\n"));
+            }
+
+            // Tambahkan paragraf "Nama" ke dokumen PDF
+            Paragraph paragrafNama = new Paragraph("                Nama: " + nama);
+            document.add(paragrafNama);
+
+            // Tambahkan total tagihan ke PDF
+            document.add(new Paragraph("                Total Tagihan: " + formatRupiah.format(totalTagihan)));
+
+            document.add(new Paragraph("                Rincian Tagihan: \n\n"));
+
+            PdfPTable table = new PdfPTable(4);
+            
+            // Membuat objek Font untuk teks bold
+            com.itextpdf.text.Font boldFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Font.BOLD);
+
+            // Menambahkan header kolom ke tabel
+            PdfPCell headerCell = new PdfPCell(new Phrase("Bulan", boldFont));
+            headerCell.setBackgroundColor(new BaseColor(0xFFC727)); // Atur warna latar belakang
+        
+            table.addCell(headerCell);
+
+            headerCell = new PdfPCell(new Phrase("Nominal", boldFont));
+            headerCell.setBackgroundColor(new BaseColor(0xFFC727)); // Atur warna latar belakang
+            table.addCell(headerCell);
+
+            headerCell = new PdfPCell(new Phrase("Untuk", boldFont));
+            headerCell.setBackgroundColor(new BaseColor(0xFFC727)); // Atur warna latar belakang
+            table.addCell(headerCell);
+
+            headerCell = new PdfPCell(new Phrase("Keterangan", boldFont));
+            headerCell.setBackgroundColor(new BaseColor(0xFFC727)); // Atur warna latar belakang
+            table.addCell(headerCell);
+
+            for (String[] row : rows) {
+                String bulan = row[0];
+                String nominal = row[1];
+                String untuk = row[2];
+                String keterangan = row[3];
+
+                table.addCell(bulan);
+                table.addCell(nominal);
+                table.addCell(untuk);
+                table.addCell(keterangan);
+            }
+
+            document.add(table);
+
+            document.close();
+
+            JOptionPane.showMessageDialog(null, "Tabel telah dicetak ke file PDF.");
+
+            // Nama file PDF yang akan dibuka
+            String fileName = "output.pdf";
+
+            // Mendapatkan direktori kerja saat ini
+            workingDirectory = System.getProperty("user.dir");
+
+            // Path lengkap ke file PDF
+            String filePath = workingDirectory + File.separator + fileName;
+
+            // Membuka file PDF di browser default
+            try {
+                File file = new File(filePath);
+                Desktop.getDesktop().open(file);
+            } catch (IOException e) {
+                // Tangani jika terjadi kesalahan saat membuka file
+                e.printStackTrace();
+            }
+
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-    } catch (DocumentException e) {
-        e.printStackTrace();
-    } catch (Exception e) {
-        e.printStackTrace();
     }
-}
-        
-        
 
 }
-
-
-
-
-
-
-

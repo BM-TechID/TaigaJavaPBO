@@ -4,6 +4,7 @@
  */
 package Taiga;
 
+import static Taiga.Koneksi.getConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.Connection;
@@ -13,7 +14,6 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import java.awt.Color;
 import java.awt.Dimension;
-
 
 /**
  *
@@ -26,7 +26,7 @@ public class signinAdmin extends javax.swing.JFrame {
      */
     public signinAdmin() {
         initComponents();
-        
+
         // Mengatur ukuran default untuk tablet
         int tabletWidth = 800;
         int tabletHeight = 600;
@@ -183,55 +183,58 @@ public class signinAdmin extends javax.swing.JFrame {
 
     private void btnMasukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMasukActionPerformed
         // TODO add your handling code here:
-          // Mengambil nilai username dan password dari input field
-            String username = Username.getText();
-            String password = String.valueOf(Password.getPassword());
+        // Mengambil nilai username dan password dari input field
+        String username = Username.getText();
+        String password = String.valueOf(Password.getPassword());
 
-            // Mengecek kecocokan username dan password dengan tabel signup di database
-            Connection conn = null;
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
+// Mengecek kecocokan username dan password dengan tabel signup di database
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
 
-            try {
-                // Menggunakan koneksi dari kelas Koneksi.java
-                conn = Koneksi.getConnection();
+        try {
+            // Menggunakan koneksi dari kelas Koneksi.java
+            conn = Koneksi.getConnection();
 
-                // Query untuk mendapatkan data dari tabel signup dengan username dan password yang sesuai
-                String query = "SELECT * FROM signup WHERE username = ? AND password = ?";
-                stmt = conn.prepareStatement(query);
-                stmt.setString(1, username);
-                stmt.setString(2, password);
-                rs = stmt.executeQuery();
+            // Query untuk mendapatkan data dari tabel signup dengan username yang sesuai
+            String query = "SELECT * FROM signup WHERE username = ?";
+            stmt = conn.prepareStatement(query);
+            stmt.setString(1, username);
+            rs = stmt.executeQuery();
 
-                // Mengecek apakah terdapat hasil query (username dan password sesuai)
-                if (rs.next()) {
-                    // Jika sesuai, tampilkan pesan berhasil login dan alihkan ke SigninAdmin.java
-                    // Jika sesuai, tampilkan pesan berhasil login dan alihkan ke Dashboard.java
+            // Mengecek apakah terdapat hasil query (username sesuai)
+            if (rs.next()) {
+                // Mendapatkan password terenkripsi dari hasil query
+                String storedPassword = rs.getString("password");
+
+                // Mengecek kesesuaian password terenkripsi dengan password diinput
+                if (storedPassword.equals(MD5Encryption.encrypt(password))) {
+                    // Jika sesuai, tampilkan pesan berhasil login dan alihkan ke Home.java
                     JOptionPane.showMessageDialog(this, "Login berhasil!");
                     Home home = new Home();
                     home.setVisible(true);
                     this.dispose();
-
                 } else {
                     // Jika tidak sesuai, tampilkan pesan kesalahan
                     JOptionPane.showMessageDialog(this, "Username atau password salah!");
                 }
-            } catch (SQLException ex) {
-                Logger.getLogger(signinAdmin.class.getName()).log(Level.SEVERE, null, ex);
-                // Tangkap SQLException dan tampilkan pesan kesalahan
-                JOptionPane.showMessageDialog(this, "Gagal melakukan operasi database: " + ex.getMessage());
+            } else {
+                // Jika tidak ditemukan username, tampilkan pesan kesalahan
+                JOptionPane.showMessageDialog(this, "Username atau password salah!");
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(signinAdmin.class.getName()).log(Level.SEVERE, null, ex);
+            // Tangkap SQLException dan tampilkan pesan kesalahan
+            JOptionPane.showMessageDialog(this, "Gagal melakukan operasi database: " + ex.getMessage());
+        }
 
-
-    
-        
     }//GEN-LAST:event_btnMasukActionPerformed
 
     private void jLabel10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel10MouseClicked
         // TODO add your handling code here:
         signupAdmin signupadmin = new signupAdmin();
         signupadmin.setVisible(true);
-        
+
         dispose();
     }//GEN-LAST:event_jLabel10MouseClicked
 
@@ -240,21 +243,41 @@ public class signinAdmin extends javax.swing.JFrame {
         int confirm = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin mereset data login?", "Konfirmasi Reset Data Login", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            Koneksi conn = new Koneksi();
-            conn.openConnection(); 
+            // Generate CAPTCHA
+            int num1 = (int) (Math.random() * 10); // Angka pertama antara 0-9
+            int num2 = (int) (Math.random() * 10); // Angka kedua antara 0-9
+            int result = num1 + num2;
 
-            try {
-                String deleteQuery = "DELETE FROM signup";
-                String updateQuery = "INSERT INTO `signup`(`email`, `username`, `password`) VALUES ('admin@mail.com','admin','admin')";
+            // Meminta inputan captcha dari pengguna
+            String captchaInput = JOptionPane.showInputDialog(this, "Berapa hasil penjumlahan " + num1 + " + " + num2 + "?");
 
-                conn.executeUpdate(deleteQuery);
-                conn.executeUpdate(updateQuery);
+            // Memeriksa captcha
+            if (captchaInput != null && captchaInput.equals(String.valueOf(result))) {
+                // Hapus semua data dari tabel signup
+                try {
+                    Connection conn = getConnection();  // Koneksi ke database
 
-                JOptionPane.showMessageDialog(this, "Data login berhasil dihapus. Kata sandi default telah diubah menjadi 'Username: admin Password: admin'.");
-            }  finally {
-                conn.closeConnection();
+                    // Hapus semua data dari tabel signup
+                    PreparedStatement deleteStmt = conn.prepareStatement("DELETE FROM signup");
+                    deleteStmt.executeUpdate();
+
+                    // Tambahkan data login default ke tabel signup
+                    PreparedStatement insertStmt = conn.prepareStatement("INSERT INTO signup (email, username, password) VALUES (?, ?, ?)");
+                    insertStmt.setString(1, "admin@mail.com"); // Ganti email default di sini jika perlu
+                    insertStmt.setString(2, "admin"); // Ganti username default di sini jika perlu
+                    String encryptedPassword = MD5Encryption.encrypt("admin"); // Ganti password default di sini jika perlu
+                    insertStmt.setString(3, encryptedPassword);
+                    insertStmt.executeUpdate();
+
+                    JOptionPane.showMessageDialog(this, "Data login berhasil direset. Kata sandi default telah diubah menjadi 'Username: admin Password: admin'.");
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat mereset data login: " + e.getMessage());
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Captcha salah. Reset data login dibatalkan.");
             }
         }
+
 
     }//GEN-LAST:event_jLabel7MouseClicked
 
@@ -316,5 +339,3 @@ public class signinAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     // End of variables declaration//GEN-END:variables
 }
-
-

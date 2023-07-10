@@ -4,9 +4,14 @@
  */
 package Taiga;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  *
@@ -18,31 +23,67 @@ public class DashboardMain extends javax.swing.JFrame {
      * Creates new form DashboardMain
      */
     public DashboardMain() {
-        initComponents();
-        
-        // Mengatur ukuran default untuk tablet
-        int tabletWidth = 800;
-        int tabletHeight = 600;
+        try {
+            initComponents();
 
-        // Menambah faktor skala
-        double scale = 1.2; // Faktor skala 1.2 akan membesarkan ukuran frame sebesar 20%
-        int scaledWidth = (int) (tabletWidth * scale);
-        int scaledHeight = (int) (tabletHeight * scale);
+            // Mengatur ukuran default untuk tablet
+            int tabletWidth = 800;
+            int tabletHeight = 600;
 
-        Dimension scaledSize = new Dimension(scaledWidth, scaledHeight);
-        setPreferredSize(scaledSize);
+            // Menambah faktor skala
+            double scale = 1.2; // Faktor skala 1.2 akan membesarkan ukuran frame sebesar 20%
+            int scaledWidth = (int) (tabletWidth * scale);
+            int scaledHeight = (int) (tabletHeight * scale);
 
-        // Mengatur warna latar belakang menjadi putih
-        getContentPane().setBackground(Color.WHITE);
+            Dimension scaledSize = new Dimension(scaledWidth, scaledHeight);
+            setPreferredSize(scaledSize);
 
-        pack(); // Atur ukuran frame secara otomatis
-        setVisible(true);
+            // Mengatur warna latar belakang menjadi putih
+            getContentPane().setBackground(Color.WHITE);
 
-        // Mengatur posisi frame di tengah layar
-        setLocationRelativeTo(null);
+            pack(); // Atur ukuran frame secara otomatis
+            setVisible(true);
+
+            // Mengatur posisi frame di tengah layar
+            setLocationRelativeTo(null);
+
+            ChartPanelTagihan chartPanelTagihan = new ChartPanelTagihan();
+            LinePanelTagihan linePanelTagihan = new LinePanelTagihan();
+            PieChartPanel pieChartPanel = new PieChartPanel();
+
+            jPanel3.setLayout(new BorderLayout());
+            jPanel3.add(chartPanelTagihan, BorderLayout.CENTER);
+            jPanel3.revalidate();
+            jPanel3.repaint();
+
+            linePanelTagihan.showLineChart();
+            JPanel panelLineChart = linePanelTagihan.getPanelLineChart();
+
+            jPanel5.removeAll();
+            jPanel5.setLayout(new BorderLayout());
+            jPanel5.add(panelLineChart, BorderLayout.CENTER);
+            jPanel5.revalidate();
+            jPanel5.repaint();
+
+            jPanel7.removeAll();
+            jPanel7.setLayout(new BorderLayout());
+            jPanel7.add(pieChartPanel, BorderLayout.CENTER);
+            jPanel7.revalidate();
+            jPanel7.repaint();
+
+            TabelListInfo tabelListInfo = new TabelListInfo();
+
+            jPanel6.removeAll();
+            jPanel6.setLayout(new BorderLayout());
+            jPanel6.add(tabelListInfo, BorderLayout.CENTER);
+            jPanel6.revalidate();
+            jPanel6.repaint();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DashboardMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -66,8 +107,11 @@ public class DashboardMain extends javax.swing.JFrame {
         btnPemasukan = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
+        jPanel = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -222,14 +266,63 @@ public class DashboardMain extends javax.swing.JFrame {
 
         getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 0, 760, 50));
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
-        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        jPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/free-vector-infographic-elements.jpg"))); // NOI18N
-        jPanel3.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 0, 770, 550));
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 360, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
 
-        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 50, 760, 620));
+        jPanel.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 360, 300));
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 370, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
+        jPanel.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 10, 370, 300));
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 360, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 290, Short.MAX_VALUE)
+        );
+
+        jPanel.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 320, 360, 290));
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 360, Short.MAX_VALUE)
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 290, Short.MAX_VALUE)
+        );
+
+        jPanel.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 320, 360, 290));
+
+        getContentPane().add(jPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 50, 760, 620));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -253,9 +346,8 @@ public class DashboardMain extends javax.swing.JFrame {
         this.dispose(); // Menutup frame saat ini
         DashboardMain dashboardmain = new DashboardMain();
         dashboardmain.setVisible(true);
-        
 
-            
+
     }//GEN-LAST:event_btnDashboardActionPerformed
 
     private void btnDataWargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDataWargaActionPerformed
@@ -284,7 +376,7 @@ public class DashboardMain extends javax.swing.JFrame {
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-       //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
@@ -325,10 +417,13 @@ public class DashboardMain extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanel;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     // End of variables declaration//GEN-END:variables
 }
